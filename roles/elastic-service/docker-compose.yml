@@ -1,5 +1,8 @@
 version: '3'
 # From wordpress side "elasticpress" is needed
+volumes:
+  elastic_${VOLUME_NAME}:
+    
 services:
   # Refer https://www.elastic.co/guide/en/elasticsearch/reference/6.7/docker.html
   elasticsearch:
@@ -18,5 +21,6 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
-#    volumes:
-#      - $WORKSPACE/elasticdata6:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    volumes:
+      - elastic_${VOLUME_NAME}:/usr/share/elasticsearch/data
