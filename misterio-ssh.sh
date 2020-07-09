@@ -16,7 +16,7 @@ for target in $* ; do
         exit 1
     fi
     set -u -x
-    git clone --depth 1 -b master . $MISTERIO_HOME_DIR
+    git clone --depth 1 -b master file://$(pwd) $MISTERIO_HOME_DIR
     rsync -z  --delete $MISTERIO_HOME_DIR $target:$MISTERIO_HOME_DIR || scp -r $MISTERIO_HOME_DIR $target:$MISTERIO_HOME_DIR 
     ssh $target $MISTERIO_HOME_DIR/misterio.sh $misterio_cmd || {
         echo Misterio FAILED on $target

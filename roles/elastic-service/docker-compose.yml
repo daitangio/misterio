@@ -5,7 +5,7 @@ services:
   elasticsearch:
     # Consider 6.4 for elasticpress
     #image: elasticsearch:7.5.0
-    image: elasticsearch:6.8.10
+    image: elasticsearch:6.4.3
     environment:
       - discovery.type=single-node
       # - bootstrap.memory_lock=true
