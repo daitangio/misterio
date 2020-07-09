@@ -18,8 +18,8 @@ for target in $* ; do
     set -u -x
     # GG: You can optioanally add a '-b master'
     # to use a fixed branch
-    git clone --depth 2 -b master file://$(pwd) $MISTERIO_HOME_DIR
-    rsync -z  --delete $MISTERIO_HOME_DIR $target:$MISTERIO_HOME_DIR || scp -r $MISTERIO_HOME_DIR $target:$MISTERIO_HOME_DIR 
+    git clone --depth 2 file://$(pwd) $MISTERIO_HOME_DIR
+    rsync -z  --delete $MISTERIO_HOME_DIR $target:$MISTERIO_HOME_DIR || scp -r $MISTERIO_HOME_DIR $target:$MISTERIO_HOME_DIR  >&/dev/null
     ssh $target $MISTERIO_HOME_DIR/misterio.sh $misterio_cmd || {
         echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         echo Misterio FAILED on $target 
