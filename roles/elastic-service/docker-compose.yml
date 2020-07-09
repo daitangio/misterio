@@ -18,5 +18,5 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
-    volumes:
-      #- $WORKSPACE/elasticdata6:/usr/share/elasticsearch/data
+#    volumes:
+#      - $WORKSPACE/elasticdata6:/usr/share/elasticsearch/data
