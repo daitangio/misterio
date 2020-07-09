@@ -20,7 +20,7 @@ exit
 fi
 
 set -e
-set -v
+# set -v
 cd $(dirname $0)
 for role_env in hosts/$HOSTNAME/*.env ; do
     role=$(basename $role_env)
@@ -42,8 +42,7 @@ for role_env in hosts/$HOSTNAME/*.env ; do
 
     if [ "$#" == "1" -a "$1" == "apply" ] ; then    
         ( cd $role_dir ; 
-            docker-compose build ; 
-            docker-compose up -d || (echo FAILED $role on $HOSTNAME ))
+            docker-compose up --build -d || (echo FAILED $role on $HOSTNAME ))
     else
         ( cd $role_dir ; docker-compose $* || (echo FAILED $role on $HOSTNAME ))
     fi
