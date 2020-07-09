@@ -3,7 +3,7 @@ version: '3'
 services:
   # Refer https://www.elastic.co/guide/en/elasticsearch/reference/6.7/docker.html
   elasticsearch:
-    # Consider 6.4 for elasticpress
+    # Try to push elasticpress to 7.x too
     #image: elasticsearch:7.5.0
     image: elasticsearch:6.4.3
     environment:
@@ -19,4 +19,4 @@ services:
       - 9200:9200
       - 9300:9300
     volumes:
-      - $WORKSPACE/elasticdata6:/usr/share/elasticsearch/data
+      #- $WORKSPACE/elasticdata6:/usr/share/elasticsearch/data
