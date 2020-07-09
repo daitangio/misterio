@@ -1,15 +1,17 @@
 # Misterio
-Docker-compose based Ansible alternative. It hates spiders and it is super-easy to use.
+Docker-compose based Ansible alternative. It is super-easy to use; it hates spiders (no one is perfect).
+
 
 # So what?
 Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinte numbers of hosts.
+Less then 60 lines of bash code (sorry Ansible :)
 
 # Why ?
 1. The only dependency is a recent version of docker-compose.
 2. It do not relay on docker swarm or on K8s. It can run even on ultra-small nano containers on amazon, provided you have little swap (tested)
-3. It is agent-less. It depends only on docker compose and bash
-4. Everything must be versionated to work: you cannot "forget" something.
-5. you can set misterio public repo as upstream, merge to your code and kept your secret hosts in your private repository (hosts dir is ignored by design in git: you must force its versioning).
+3. It is agent-less. It depends only on docker-compose and bash on the target.
+4. Everything must be versionated to work: you cannot easily "forget" something on your local machine.
+
 
 
 # How
