@@ -1,0 +1,18 @@
+version: "3"
+
+
+services:
+  gollum_wiki:
+    container_name: gollum_wiki
+    build:
+      context: .
+    image: gollum_wiki/gollum_wiki:latest
+    ports:
+      - "4567:4567/tcp"
+    volumes:
+       - $GITLAB_WIKI_HOME:/wiki       
+    #restart: unless-stopped
+
+
+
+
