@@ -20,13 +20,10 @@ exit
 fi
 
 set -e
+set -v
 cd $(dirname $0)
 for role_env in hosts/$HOSTNAME/*.env ; do
     role=$(basename $role_env)
-    
-    
-
-
     inst_re='(.*)@(.*).env'
     if [[ $role  =~ $inst_re ]]; then        
         MISTERIO_INST_NAME=${BASH_REMATCH[2]}
