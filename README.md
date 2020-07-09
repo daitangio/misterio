@@ -1,12 +1,15 @@
 # misterio
-Docker-compose based Ansible alternative. It hates spiders
+Docker-compose based Ansible alternative. It hates spiders and it is super-easy to use.
 
 # So what?
 Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinte numbers of hosts.
 
-The only dependency is a recent version of docker-compose.
+# Why ?
+1. The only dependency is a recent version of docker-compose.
+2. It do not relay on docker swarm or on K8s. It can run even on ultra-small nano containers.
+3. It is agent-less. It depends only on docker compose and bash
+4. Everything must be verionated to work: you cannot "forget" something.
 
-It do not relay on docker swarm: every host can be tiny and isolated.
 
 # How
 For every hostname, define a directory inside hosts/
@@ -29,8 +32,8 @@ A misterio-ssh demo script is provided to show how to propagate it on a set of r
 Misterio ssh need a misterio command followed by a list of target:
 
 ```bash
-./misterio-ssh.sh apply wonderhost
-./misterio-ssh.sh logs wonderhost
-./misterio-ssh.sh down wonderhost
+./misterio-ssh.sh apply pi@raspy1 peter@mayhome parker@newserver
+./misterio-ssh.sh logs pi@raspy1 peter@mayhome parker@newserver
+./misterio-ssh.sh down pi@raspy1 peter@mayhome parker@newserver
 ```
 

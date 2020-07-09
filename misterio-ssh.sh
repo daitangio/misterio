@@ -19,9 +19,11 @@ for target in $* ; do
     git clone --depth 2 -b master file://$(pwd) $MISTERIO_HOME_DIR
     rsync -z  --delete $MISTERIO_HOME_DIR $target:$MISTERIO_HOME_DIR || scp -r $MISTERIO_HOME_DIR $target:$MISTERIO_HOME_DIR 
     ssh $target $MISTERIO_HOME_DIR/misterio.sh $misterio_cmd || {
+        echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         echo Misterio FAILED on $target
         echo Removing temp stuff
         ssh $target rm -r $MISTERIO_HOME_DIR    
+        sleep 1
     }
 
     ssh $target rm -r $MISTERIO_HOME_DIR
