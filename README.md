@@ -37,3 +37,15 @@ Misterio ssh need a misterio command followed by a list of target:
 ./misterio-ssh.sh down pi@raspy1 peter@mayhome parker@newserver
 ```
 
+Misterio-ssh is quite smart; for every target it will
+1. Clone a ultra-small version of the repository and send it over the wire to the selected target
+   mistrio-ssh will try to use rsync and fallback to scp if needed
+2. Remote launch it
+3. Stop if an error occurs before step (1)
+   Proceed to the next target if it fails
+
+You can hack the checkout branch 8the default is the current branch
+
+
+
+

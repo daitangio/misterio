@@ -42,7 +42,9 @@ for role_env in hosts/$HOSTNAME/*.env ; do
 
     if [ "$#" == "1" -a "$1" == "apply" ] ; then    
         ( cd $role_dir ; 
-            docker-compose up --build -d || (echo FAILED $role on $HOSTNAME ))
+            docker-compose up --build -d || (echo FAILED $role on $HOSTNAME )
+            docker-compose logs --tail 5
+        )
     else
         ( cd $role_dir ; docker-compose $* || (echo FAILED $role on $HOSTNAME ))
     fi
