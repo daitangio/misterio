@@ -48,8 +48,17 @@ Misterio-ssh is quite smart; for every target it will
    Proceed to the next target if it fails
 
 
+# Tips
+Under docker for window, add
+COMPOSE_CONVERT_WINDOWS_PATHS=1
+on yout env path if you plan to bind stuff like
+> /var/run/docker.sock:/var/run/docker.sock
+
+This will enable your roles to run on windows and on linux dameons seamless.
+See https://stackoverflow.com/a/52866439/75540 for more details
 
 # The Hype
 1. It is trivial to parallelize misterio-ssh or the replace docker-compose with K8s clusters (try and push me back).
 2. You can add git submodules below roles/ to link recipe (your personal "ansible galaxy" is docker hub!)
+3. No complex stuff to learn: it is DOCKER!
 
