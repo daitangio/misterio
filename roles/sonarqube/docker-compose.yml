@@ -1,8 +1,5 @@
 version: '3'
-services:
-  # See https://docs.docker.com/engine/swarm/stack-deploy/
-  # for a complete swarm deploy demo
-  # C:\Users\giorgig\starter-kit\ahab>docker run -p 9000:9000 --rm -v   
+services:  
   sonar:
     container_name: ${MISTERIO_INST_PREFIX}_sonar7
     image: sonarqube:7.9.3-community
@@ -16,7 +13,7 @@ services:
         limits:
           cpus: "0.90"
           memory: 2048M
-    # Required because sonar 
+    # Required because sonar is slow to shutdown and we want to avoid bad shuts
     stop_grace_period: 10m30s
     volumes:
       - "$SONAR_CONTAINER_STORAGE/conf:/opt/sonarqube/conf"      
