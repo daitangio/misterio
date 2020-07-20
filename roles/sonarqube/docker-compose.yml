@@ -1,0 +1,24 @@
+version: '3'
+services:
+  # See https://docs.docker.com/engine/swarm/stack-deploy/
+  # for a complete swarm deploy demo
+  # C:\Users\giorgig\starter-kit\ahab>docker run -p 9000:9000 --rm -v   
+  sonar:
+    container_name: ${MISTERIO_INST_PREFIX}_sonar7
+    image: sonarqube:7.9.3-community
+    restart: unless-stopped
+    ports:
+      - "$SONAR_PORT:9000"
+    ##### Only for socker swarm:
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.90"
+          memory: 2048M
+    # Required because sonar 
+    stop_grace_period: 10m30s
+    volumes:
+      - "$SONAR_CONTAINER_STORAGE/conf:/opt/sonarqube/conf"      
+      - "$SONAR_CONTAINER_STORAGE/extensions:/opt/sonarqube/extensions"
+      - "$SONAR_CONTAINER_STORAGE/data:/opt/sonarqube/data"
