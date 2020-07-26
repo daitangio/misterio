@@ -1,0 +1,10 @@
+version: "2"
+services:
+    sqlite-web:
+        image: coleifer/sqlite-web:latest
+        ports:
+            - "8080:8080"
+        volumes:
+            - $DATA_DIR:/data
+        environment:
+            SQLITE_DATABASE: $DB_FILENAME
