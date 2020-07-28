@@ -16,7 +16,7 @@ The technology is based only on docker compose (no docker swarm)
 
 
 EOF
-exit
+exit 1
 fi
 
 set -e
