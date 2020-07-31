@@ -1,3 +1,4 @@
 roles/*/.env
 roles/*/temp
 hosts/*
+ecs/*
