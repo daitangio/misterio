@@ -1,6 +1,8 @@
 # Misterio
-Docker-compose based Ansible alternative. It is super-easy to use; it hates spiders (no one is perfect).
+Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*
+It is super-easy to use; it hates spiders (no one is perfect).
 
+<img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Misterio Marvel" >
 
 # So what?
 Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinte numbers of hosts.
