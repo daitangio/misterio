@@ -1,5 +1,6 @@
 # Misterio
-Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*
+Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*.
+
 It is super-easy to use; it hates spiders (no one is perfect).
 
 <img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Misterio Marvel" >
@@ -8,7 +9,7 @@ It is super-easy to use; it hates spiders (no one is perfect).
 Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinte numbers of hosts.
 Less then 60 lines of bash code (sorry Ansible :)
 
-# Why ?
+# Why?
 1. The only dependency is a recent version of `docker-compose`.
 2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon, provided you have little swap (tested)
 3. It is agent-less. It depends only on `docker-compose` and `bash` on the target.
