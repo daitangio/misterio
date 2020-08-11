@@ -19,10 +19,16 @@ EOF
 exit 1
 fi
 
+if [ ! -z $MISTERIO_HOST_ALIAS  ]; then
+    MISTERIO_HOST=$MISTERIO_HOST_ALIAS
+else 
+    MISTERIO_HOST=$HOSTNAME    
+fi
+
 set -e
 # set -v
 cd $(dirname $0)
-for role_env in hosts/$HOSTNAME/*.env ; do
+for role_env in hosts/$MISTERIO_HOST/*.env ; do
     role=$(basename $role_env)
     inst_re='(.*)@(.*).env'
     if [[ $role  =~ $inst_re ]]; then        
