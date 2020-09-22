@@ -51,6 +51,21 @@ Misterio-ssh is quite smart; for every target it will
    Proceed to the next target if it fails
 
 
+# State management
+The apply command will store the current machine state inside a cvs file.
+The aim is to provide a way to deploy only changed resources
+
+Output example:
+
+2,3c2,3
+< dad8e0e01662,nextcloud_app_1
+< 396180b47a02,nextcloud_db_1
+---
+> b64698e0197e,nextcloud_app_1
+> 50043d1474ea,nextcloud_db_1
+
+
+
 # Tips
 Under docker for Windows, add
 COMPOSE_CONVERT_WINDOWS_PATHS=1

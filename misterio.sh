@@ -26,7 +26,8 @@ else
 fi
 
 set -e
-# set -v
+#set -v
+mkdir -p hosts/$MISTERIO_HOST/states
 cd $(dirname $0)
 for role_env in hosts/$MISTERIO_HOST/*.env ; do
     role=$(basename $role_env)
@@ -49,14 +50,22 @@ for role_env in hosts/$MISTERIO_HOST/*.env ; do
     if [ "$#" == "1" -a "$1" == "apply" ] ; then    
         ( cd $role_dir ; 
             docker-compose up --build -d || (echo FAILED $role on $HOSTNAME ))
+
     else
         ( cd $role_dir ; docker-compose $* || (echo FAILED $role on $HOSTNAME ))
     fi
     { set +x; } 2>/dev/null
     # docker build 'https://github.com/elastic/dockerfiles.git#v6.8.10:elasticsearch'
-done
-echo '=========================='
-echo -ne 'Total Memory used:'
-docker stats --no-stream --format "table {{.MemPerc}}" | sed 's/[A-Za-z]*//g' | awk '{sum += $1} END {print sum "%"}'
-docker ps
 
+# Status generation: store it in the machine
+#  docker ps  -a --format "{{json .}}"
+
+(
+    cd hosts/$MISTERIO_HOST/states ; 
+    docker ps  --format "table {{.ID}},{{.Names}}" >new-state.csv
+    if [  -f current-state.csv ] ; then
+     diff current-state.csv new-state.csv  || true 
+    fi 
+)
+(cd hosts/$MISTERIO_HOST/states ;  cp new-state.csv current-state.csv )
+done
