@@ -43,14 +43,13 @@ for role_env in hosts/$HOSTNAME/*.env ; do
     if [ "$#" == "1" -a "$1" == "apply" ] ; then    
         ( cd $role_dir ; 
             docker-compose up --build -d || (echo FAILED $role on $HOSTNAME ))
+
+        docker ps  --format "table {{.ID}},{{.Names}}"
     else
         ( cd $role_dir ; docker-compose $* || (echo FAILED $role on $HOSTNAME ))
     fi
     { set +x; } 2>/dev/null
     # docker build 'https://github.com/elastic/dockerfiles.git#v6.8.10:elasticsearch'
 done
-echo '=========================='
-echo -ne 'Total Memory used:'
-docker stats --no-stream --format "table {{.MemPerc}}" | sed 's/[A-Za-z]*//g' | awk '{sum += $1} END {print sum "%"}'
-docker ps
+
 
