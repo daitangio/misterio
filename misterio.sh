@@ -45,12 +45,9 @@ for role_env in hosts/$MISTERIO_HOST/*.env ; do
     set -x
     cp ${role_env}  ${role_dir}/.env    
     { set +x; } 2>/dev/null
-
-    if [ "$#" == "1" -a "$1" == "apply" ] ; then    
-        ( cd $role_dir ; 
-            docker-compose up --build -d || (echo FAILED $role on $HOSTNAME ))
-
-        docker ps  --format "table {{.ID}},{{.Names}}"
+    if [ "$#" == "1" -a "$1" == "apply" ] ; then
+        ( cd $role_dir ; docker-compose up --build -d || (echo FAILED $role on $HOSTNAME ) )
+        ( cd $role_dir ; docker-compose ps  ; docker-compose logs --tail 3 )
     else
         ( cd $role_dir ; docker-compose $* || (echo FAILED $role on $HOSTNAME ))
     fi

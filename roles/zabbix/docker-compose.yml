@@ -1,6 +1,7 @@
 version: '3.5'
-# Volumes are not recreated via a up/down cycle
+# Volumes are not recreated via a up/down cycle so it is safe to do not sepcify external: true
 # Sometimes you want to control it better via a external flag
+#
 volumes:
   zabbix_postgres:    
     #external: true
@@ -10,7 +11,7 @@ volumes:
 services:
   postgres-server:    # The Postgres Database Service
     image: postgres:12.4
-    restart: always
+    restart: unless-stopped
     environment:   # Username, password and database name variables
       POSTGRES_USER: zabbix
       POSTGRES_PASSWORD: trustn00ne
@@ -23,7 +24,7 @@ services:
 
   zabbix-server:     # The main Zabbix Server Software Service
     image: zabbix/zabbix-server-pgsql:ubuntu-5.0-latest
-    restart: always
+    restart: unless-stopped
     environment:   # The Postgres database value variable
       POSTGRES_USER: zabbix
       POSTGRES_PASSWORD: trustn00ne
@@ -36,30 +37,32 @@ services:
       - postgres-server
     ports: 
       - 10051:10051
-    volumes:  # Volumes for scripts and related files you can add
+    volumes:  
+      # Volumes for scripts and related files you can add
       #- /etc/localtime:/etc/localtime:ro
       #- /etc/timezone:/etc/timezone:ro 
       - zabbix_disk:/usr/lib/zabbix
     networks:
       - zabbix-network
 
-#The default username/password credentials for you Zabbix frontend will be:
+# The main Zabbix web UI or interface
+# The default username/password credentials for you Zabbix frontend will be:
 #Admin,zabbix
-  zabbix-web:    # The main Zabbix web UI or interface
+  zabbix-web:   
     image: zabbix/zabbix-web-nginx-pgsql:alpine-5.0-latest
-    restart: always
-    environment:  # Postgre database variables
+    restart: unless-stopped
+    environment:
       POSTGRES_USER: zabbix
       POSTGRES_PASSWORD: trustn00ne
       POSTGRES_DB: zabbix
-      ZBX_SERVER_HOST: zabbix-server  # Zabbix related and Php variables
+      ZBX_SERVER_HOST: zabbix-server
       ZBX_POSTMAXSIZE: 64M
       PHP_TZ: "Europe/Rome"
       ZBX_MAXEXECUTIONTIME: 500
     depends_on:
       - postgres-server
       - zabbix-server
-    ports:    # Port where Zabbix UI is available
+    ports:
       - 80:8080
       - 443:8443
     networks:
