@@ -1,6 +1,6 @@
 version: '3'
 volumes:
-    docker_volume:
+    jenkins_home_disk:
 
 services:
     jenkins:
@@ -8,8 +8,10 @@ services:
             context: .
         image: misterio-jenkins:1.0.0
         volumes:
-            - docker_volume:/var/jenkins_home 
+            - jenkins_home_disk:/var/jenkins_home 
             # Enable docker socket control
             - "/var/run/docker.sock:/var/run/docker.sock"
+            # Expose my repos here
+            - $HOME/code:/git-repos
         ports:
             - 8080:8080

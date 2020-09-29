@@ -50,6 +50,13 @@ Misterio-ssh is quite smart; for every target it will
 3. Stop if an error occurs before step (1)
    Proceed to the next target if it fails
 
+# The Bonus
+Misterio is also a collecion of ready-made docker-compose infrastructure you can jump into.
+For instance, jenkins-with-docker show you how to get a dockerized-jenkins with:
+
+- self running git server
+- access to docker daemon to self-build stuff using docker plugin
+
 
 # Tips
 Under docker for Windows, add
