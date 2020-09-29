@@ -1,0 +1,15 @@
+version: '3'
+volumes:
+    docker_volume:
+
+services:
+    jenkins:
+        build:
+            context: .
+        image: misterio-jenkins:1.0.0
+        volumes:
+            - docker_volume:/var/jenkins_home 
+            # Enable docker socket control
+            - "/var/run/docker.sock:/var/run/docker.sock"
+        ports:
+            - 8080:8080
