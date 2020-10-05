@@ -1,0 +1,15 @@
+version: '2'
+
+volumes:
+    root_folder:
+
+services:
+    ubuntu_dock:
+        image: ubuntu:18.04
+        # Try with and without volume directive to see the difference
+        volumes:
+            - root_folder:/root/
+        ports:
+            - 8000:80
+            - 8080:8080
+        command: bash -c "echo Connect at $(hostname); while true ; do sleep 1000; done"
