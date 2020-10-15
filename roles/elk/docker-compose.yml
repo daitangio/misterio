@@ -11,4 +11,4 @@ services:
       - "9200:9200" # Elasticsearch JSON interface
       - "5044:5044" # Logstash Beats interface
     volumes:
-        - elk-data:/var/lib/elasticsearch 
+        - elk_data:/var/lib/elasticsearch 
