@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  backup_dameon:
+    image: misterio_backup_me:1.0.0
+    build:
+      context: .
+    restart: unless-stopped
+    volumes:
+      # Mount host server to execute full backup
+      # i.e. backup user homes
+      - c:/users:/host_to_backup
+    environment:      
+      - RSYNC_BACKUP_SERVER=jj@wonderboy
+      # Tip: use the docker daemon hostname inside DOCKER_HOST_HOSTNAME to correctly locate your destinagion
+      - RSYNC_BACKUP_SERVER_PATH=/rsync/backup-pool/$DOCKER_HOST_HOSTNAME
+    # command: /bin/sh -c "while sleep 1000; do :; done"
+    command: /bin/sh -c "while sleep 1;  do /root/backup-me.sh ; sleep 3600; done "
+
