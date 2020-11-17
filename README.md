@@ -20,9 +20,11 @@ Less then 60 lines of bash code (sorry Ansible :)
 # How
 For every hostname, define a directory inside `hosts/`
 Put in it an `env` file based on this syntax:
-    `<rolename>[@inst].env`
+
+    <rolename>[@inst].env
+
 where `@inst` is OPTIONAL and can be used to have multiple instances on the same machine.
-You need to parametrize the role to support this, because we avoid using "magic way" to pass the inst value.
+
 
 # The magic
 For every role on the target machine misterio will:
