@@ -1,5 +1,5 @@
 FROM jenkins/jenkins:2.249.1-lts-jdk11
-# Last diana jenkins is 2.163
+
 
 ENV TZ Europe/Rome
 ENV LANG en_US.UTF-8
@@ -7,10 +7,6 @@ ENV LANG en_US.UTF-8
 WORKDIR /var
 USER root
 
-#COPY --chown=jenkins:jenkins my_jenkins_home.tgz .
-#RUN rm -rf /var/jenkins_home/*
-#RUN tar zxf my_jenkins_home.tgz 
-#RUN rm my_jenkins_home.tgz
 
 # GG: Docker interop
 # The idea is to expose the docker socket from the docker host, running the image via -v "/var/run/docker.sock:/var/run/docker.sock"
@@ -39,7 +35,6 @@ RUN docker-compose --version
 
 # Fix jenkins java discovery
 # For unknown reasons, the image did not propagate the env PATH to jenkins user
-# 
 RUN ln -s /usr/local/openjdk-11/bin/java /usr/local/bin
 
 USER jenkins
