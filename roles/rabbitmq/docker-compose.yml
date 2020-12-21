@@ -1,0 +1,14 @@
+version: '3'
+services:  
+  myrabbit:
+    #image: rabbitmq:3-alpine    
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - "8080:15672"
+      - "5672:5672"
+      - "15672:15672"       
+    environment:
+      # - RABBITMQ_DEFAULT_VHOST=localhost
+      - RABBITMQ_DEFAULT_USER=rabbit 
+      - RABBITMQ_DEFAULT_PASS=d0wnr4bbith0le
