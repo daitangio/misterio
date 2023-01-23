@@ -1,0 +1,9 @@
+version: '2'
+services:
+  nginx_misterio:
+    image: nginx_misterio:1.0.0
+    build:
+      context: .
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
