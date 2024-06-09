@@ -2,7 +2,7 @@
 
 if [ "z$1" == "z" ]; then
 cat <<EOF
-Usage: misterio.sh \{ apply \| up \| start \|  down \}
+Simple usage: misterio \{ apply \| up \| start \|  down \}
 Every docker compose command is supported
 
 apply: make a build and an up
@@ -14,10 +14,19 @@ where @inst can be used to have multiple instance on the same machine
 
 The technology is based only on docker compose (no docker swarm)
 
+Role specific use:
+
+misterio.sh --list
+ List all the roles
+
+misterio.sh --rolename \{ apply \| up \| start \|  down \}
+
+Apply a specific command to that role
 
 EOF
 exit 1
 fi
+
 
 if [ ! -z $MISTERIO_HOST_ALIAS  ]; then
     MISTERIO_HOST=$MISTERIO_HOST_ALIAS
@@ -25,12 +34,11 @@ else
     MISTERIO_HOST=$HOSTNAME    
 fi
 
-set -e
-# set -v
-cd $(dirname $0)
-for role_env in hosts/$MISTERIO_HOST/*.env ; do
-    role=$(basename $role_env)
-    inst_re='(.*)@(.*).env'
+processRole(){
+    local role_env="$1"
+    shift 1
+    local role=$(basename $role_env)
+    local inst_re='(.*)@(.*).env'
     if [[ $role  =~ $inst_re ]]; then        
         MISTERIO_INST_NAME=${BASH_REMATCH[2]}
         #echo MISTERIO_INST_PREFIX=$MISTERIO_INST_PREFIX
@@ -40,19 +48,47 @@ for role_env in hosts/$MISTERIO_HOST/*.env ; do
         role_dir=roles/${role//.env/}
     fi
 
-    echo Applying $role into ${role_dir}
+    echo -e '\nEnv:' ${role_env//hosts/}
 
-    set -x
-    cp ${role_env}  ${role_dir}/.env    
+    # set -x
+    cp ${role_env}  ${role_dir}/.env || true   
     { set +x; } 2>/dev/null
     if [ "$#" == "1" -a "$1" == "apply" ] ; then
-        ( cd $role_dir ; docker-compose up --build -d || (echo FAILED $role on $HOSTNAME ) )
-        ( cd $role_dir ; docker-compose ps  ; docker-compose logs --tail 3 )
+        ( cd $role_dir ; docker compose up --build -d || (echo FAILED $role on $HOSTNAME ) )
+        ( cd $role_dir ; docker compose ps  ; docker compose logs --tail 3 )
     else
-        ( cd $role_dir ; docker-compose $* || (echo FAILED $role on $HOSTNAME ))
+        ( cd $role_dir ; docker compose $* || (echo FAILED $role on $HOSTNAME ))
     fi
     { set +x; } 2>/dev/null
     # docker build 'https://github.com/elastic/dockerfiles.git#v6.8.10:elasticsearch'
-done
+
+}
+
+case $1 in
+ --list)
+    echo Roles for $MISTERIO_HOST
+    for role_env in hosts/$MISTERIO_HOST/*.env ; do
+        role=$(basename $role_env)
+        echo ${role//.env/}
+    done
+    ;; 
+  --*)
+    opt="$1"
+    shift 1
+    single_role=${opt//--/}
+    # echo $single_role
+    processRole hosts/$MISTERIO_HOST/${single_role}.env $*
+    ;;
+
+    *)
+        set -e
+        # set -v
+        cd $(dirname $0)
+        for role_env in hosts/$MISTERIO_HOST/*.env ; do
+            processRole $role_env $*
+        done
+    ;;
+esac
+
 
 
