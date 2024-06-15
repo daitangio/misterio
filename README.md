@@ -6,7 +6,7 @@ It is super-easy to use; it hates spiders (no one is perfect).
 <img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Misterio Marvel" >
 
 # So what?
-Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinte numbers of hosts.
+Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinite numbers of hosts.
 Less then 60 lines of bash code (sorry Ansible :)
 
 # Why?
@@ -34,15 +34,17 @@ For every role on the target machine misterio will:
 
 The "apply" pseudo-command will do a `build` and `up` in one step
 
+*NEW!* You can use the pseudo command --list to get the list of all the roles, and the --<rolename> syntax to apply command only to a role.
+
 
 # Distributed 
 A misterio-ssh demo script is provided to show how to propagate it on a set of remote hosts.
 Misterio ssh needs a `misterio` command followed by a list of targets:
 
 ```bash
-./misterio-ssh.sh apply pi@raspy1 peter@mayhome parker@newserver
-./misterio-ssh.sh logs pi@raspy1 peter@mayhome parker@newserver
-./misterio-ssh.sh down pi@raspy1 peter@mayhome parker@newserver
+./misterio-ssh apply pi@raspy1 peter@mayhome parker@newserver
+./misterio-ssh logs pi@raspy1 peter@mayhome parker@newserver
+./misterio-ssh down pi@raspy1 peter@mayhome parker@newserver
 ```
 
 Misterio-ssh is quite smart; for every target it will
@@ -53,7 +55,7 @@ Misterio-ssh is quite smart; for every target it will
    Proceed to the next target if it fails
 
 # The Bonus
-Misterio is also a collecion of ready-made docker-compose infrastructure you can jump into.
+Misterio is also a collection of ready-made docker-compose infrastructure you can jump into.
 For instance, jenkins-with-docker show you how to get a dockerized-jenkins with:
 
 - self running git server

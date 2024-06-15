@@ -16,10 +16,10 @@ The technology is based only on docker compose (no docker swarm)
 
 Role specific use:
 
-misterio.sh --list
+misterio --list
  List all the roles
 
-misterio.sh --rolename \{ apply \| up \| start \|  down \}
+misterio --rolename \{ apply \| up \| start \|  down \}
 
 Apply a specific command to that role
 
