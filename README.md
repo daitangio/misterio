@@ -4,7 +4,7 @@ Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*.
 It is super-easy to use.
 
 Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinite numbers of hosts.
-Less then 60 lines of bash code (sorry Ansible :)
+Less then 100 lines of bash code (sorry Ansible :)
 
 Misterio is able to manage a set of compose target as an one, appling status changes easily.
 
