@@ -1,20 +1,19 @@
-# Misterio
+# Misterio: so what?
 Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*.
+<img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Mysterio Marvel" >
+It is super-easy to use.
 
-It is super-easy to use; it hates spiders (no one is perfect).
-
-<img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Misterio Marvel" >
-
-# So what?
 Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinite numbers of hosts.
 Less then 60 lines of bash code (sorry Ansible :)
 
-# Why?
-1. The only dependency is a recent version of `docker-compose`.
-2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon, provided you have little swap (tested)
-3. It is agent-less. It depends only on `docker-compose` and `bash` on the target.
-4. Everything must be versioned to work: you cannot easily "forget" something on your local machine.
+Misterio is able to manage a set of compose target as an one, appling status changes easily.
 
+
+# Why?
+1. The only dependency is a recent version of `docker`.
+2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon, provided you have little swap (tested)
+3. It is agent-less. It depends only on `docker` and `bash` on the target.
+4. Everything must be versioned to work: you cannot easily "forget" something on your local machine.
 
 
 # How
@@ -72,7 +71,10 @@ This will enable your roles to run on Windows and on Linux dameons seamlessly.
 See https://stackoverflow.com/a/52866439/75540 for more details
 
 # The Hype
-1. It is trivial to parallelize `misterio-ssh` or the replace `docker-compose` with K8s clusters (try and push me back).
+1. It is trivial to parallelize `misterio-ssh` or the replace `docker compose` with K8s clusters (try and push me back).
 2. You can add git submodules below `roles/` to link recipes (your personal "ansible galaxy" is docker hub!)
-3. No complex stuff to learn: it is DOCKER!
+3. No complex stuff to learn: it is just DOCKER!
+
+# Other alternative
+https://github.com/piku/piku is an heroku-like alternative, based on python and not requiring docker.
 
