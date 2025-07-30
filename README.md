@@ -3,6 +3,8 @@ Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*.
 <img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Mysterio Marvel" >
 It is super-easy to use.
 
+WORK IN PROGRESS: PYTHON VERSION (see below)
+
 Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinite numbers of hosts.
 Less then 100 lines of bash code (sorry Ansible :)
 
@@ -14,7 +16,6 @@ Misterio is able to manage a set of compose target as an one, appling status cha
 2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon, provided you have little swap (tested)
 3. It is agent-less. It depends only on `docker` and `bash` on the target.
 4. Everything must be versioned to work: you cannot easily "forget" something on your local machine.
-
 
 # How
 For every hostname, define a directory inside `hosts/`
@@ -52,6 +53,17 @@ Misterio-ssh is quite smart; for every target it will
 2. Remote launch it
 3. Stop if an error occurs before step (1)
    Proceed to the next target if it fails
+
+# Python version
+Install on your virtualenv with
+
+```sh
+    python -m venv .venv
+    . .venv/bin/activate
+    pip install -e .
+```
+
+
 
 # The Bonus
 Misterio is also a collection of ready-made docker-compose infrastructure you can jump into.

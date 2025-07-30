@@ -1,0 +1,18 @@
+[project]
+name = "misterio"
+version = "1.0.0"
+description = "misterio CLI"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.2.1",
+    "requests>=2.32.4"
+]
+
+[project.scripts]
+misterio = "misterio.misterio:cli"
+
+[build-system]
+# Flit Core is a lightweight tool designed to simplify the process of packaging and distributing Python projects
+# following PEP 517
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
