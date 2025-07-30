@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [project.scripts]
-misterio = "misterio.misterio:cli"
+misterio = "misterio.misterio:misterio"
 
 [build-system]
 # Flit Core is a lightweight tool designed to simplify the process of packaging and distributing Python projects
