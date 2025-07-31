@@ -23,18 +23,31 @@ def process_role(home, env_full_path, docker_command):
 @click.command('misterio')
 @click.option('--home', envvar='MISTERIO_HOME', 
               default=os.getenv("PWD",""),
-              help="Home of hosts and roles folders. Required to work")
-@click.option('--misterio-host', envvar=["HOSTNAME", "MISTERIO_HOST"], default=os.getenv("HOSTNAME","") )
-@click.option('--list/--no-list', help="List things", default=False)
-@click.option('--single-role', envvar='MISTERIO_SINGLE_ROLE', default=None)
+              help="Home of hosts and roles folders. Can be set with MISTERIO_HOME ")
+@click.option('--misterio-host', envvar=["MISTERIO_HOST"], 
+              default="",
+              help="Default to hostname can be overriden also with MISTERIO_HOST")
+@click.option('--list/--no-list', help="List roles and exits", default=False)
+@click.option('--single-role', envvar='MISTERIO_SINGLE_ROLE', default=None,
+              help="Process just one role")
 @click.version_option(version="1.0.0")
 @click.argument('docker_command', nargs=-1, type=str)
 def misterio(home, list, misterio_host, single_role, docker_command):
-    print(f"HOME:{home} {list} {misterio_host}")
+    """ M I S T E R I O 
+    docker compose-based alternative to K8s/Ansible/SaltStack
+    Multiple host management via docker daemon 
+    """
+    if misterio_host=="":
+        import socket
+        misterio_host=socket.gethostname()
+    print(f"MISTERIO_HOME:{home} MISTERIO_HOST:{misterio_host}")
     if list:
-        print(f"Roles for {misterio_host}")
-        for filename in os.listdir(os.path.join(home, 'hosts', misterio_host)):
-            print(filename)
+        try:
+            print(f"Roles for {misterio_host}")
+            for filename in os.listdir(os.path.join(home, 'hosts', misterio_host)):
+                print(filename)
+        except FileNotFoundError:
+            print(f"No roles for {misterio_host}")
         sys.exit(0)
     if single_role:
         print(f"Processing single role {single_role}")
