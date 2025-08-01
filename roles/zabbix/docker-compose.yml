@@ -1,4 +1,4 @@
-version: '3.5'
+
 # Volumes are not recreated via a up/down cycle so it is safe to do not sepcify external: true
 # Sometimes you want to control it better via a external flag
 #

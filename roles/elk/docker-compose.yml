@@ -1,4 +1,3 @@
-version: "2"
 # oss-792
 # See https://elk-docker.readthedocs.io/#running-with-docker-compose
 volumes:

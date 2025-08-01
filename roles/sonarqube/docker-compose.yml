@@ -1,4 +1,4 @@
-version: '3'
+
 services:  
   sonar:
     container_name: ${MISTERIO_INST_PREFIX}_sonar7

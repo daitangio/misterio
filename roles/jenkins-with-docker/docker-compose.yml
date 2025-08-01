@@ -1,4 +1,4 @@
-version: '3'
+
 volumes:
     jenkins_home_disk:
 

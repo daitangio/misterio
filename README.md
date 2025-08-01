@@ -6,7 +6,7 @@ It is super-easy to use.
 *Cool!* The new python version iss easier to use and understand.
 
 Misterio is a python command  you can use to "apply" a set of roles to a infinite numbers of hosts.
-Less then 100 lines of python code HELP INCLUDED (sorry Ansible :)
+Less then 120 lines of python code HELP INCLUDED (sorry Ansible :)
 
 Misterio is able to manage a set of compose target as an one, appling status changes easily.
 

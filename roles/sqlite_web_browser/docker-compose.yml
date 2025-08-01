@@ -1,4 +1,4 @@
-version: "2"
+
 services:
     sqlite-web:
         image: coleifer/sqlite-web:latest
