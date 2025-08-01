@@ -3,18 +3,18 @@ Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*.
 <img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Mysterio Marvel" >
 It is super-easy to use.
 
-WORK IN PROGRESS: PYTHON VERSION (see below)
+*Cool!* The new python version iss easier to use and understand.
 
-Misterio is a set of two tiny bash script you can use to "apply" a set of roles to a infinite numbers of hosts.
-Less then 100 lines of bash code (sorry Ansible :)
+Misterio is a python command  you can use to "apply" a set of roles to a infinite numbers of hosts.
+Less then 100 lines of python code HELP INCLUDED (sorry Ansible :)
 
 Misterio is able to manage a set of compose target as an one, appling status changes easily.
 
 
 # Why?
-1. The only dependency is a recent version of `docker`.
+1. The only dependency is a recent version of `docker` CE  (on target hosts) and `python` 3 (on misterio host). 
 2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon, provided you have little swap (tested)
-3. It is agent-less. It depends only on `docker` and `bash` on the target.
+3. It is agent-less. It depends only on `docker daemon` on the target. Docker communication is done via ssh and can be further configured via the .ssh/config file (for instance to setup keys, tunneling, etc)
 4. Everything must be versioned to work: you cannot easily "forget" something on your local machine.
 
 # How
@@ -34,25 +34,11 @@ For every role on the target machine misterio will:
 
 The "apply" pseudo-command will do a `build` and `up` in one step
 
-*NEW!* You can use the pseudo command --list to get the list of all the roles, and the --<rolename> syntax to apply command only to a role.
+*NEW!* You can use the pseudo command --list to get the list of all the roles, and the --single-role option to restrict only to a role.
 
 
 # Distributed 
-A misterio-ssh demo script is provided to show how to propagate it on a set of remote hosts.
-Misterio ssh needs a `misterio` command followed by a list of targets:
-
-```bash
-./misterio-ssh apply pi@raspy1 peter@mayhome parker@newserver
-./misterio-ssh logs pi@raspy1 peter@mayhome parker@newserver
-./misterio-ssh down pi@raspy1 peter@mayhome parker@newserver
-```
-
-Misterio-ssh is quite smart; for every target it will
-1. Clone an ultra-small version of the repository and send it over the wire to the selected target
-   `misterio-ssh` will try to use `rsync` and fallback to `scp` if needed
-2. Remote launch it
-3. Stop if an error occurs before step (1)
-   Proceed to the next target if it fails
+Because misterio manage the DOCKER_HOST automatically, it is already distributed
 
 # Python version
 Install on your virtualenv with
@@ -61,6 +47,7 @@ Install on your virtualenv with
     python -m venv .venv
     . .venv/bin/activate
     pip install -e .
+    misterio --help
 ```
 
 
@@ -83,10 +70,13 @@ This will enable your roles to run on Windows and on Linux dameons seamlessly.
 See https://stackoverflow.com/a/52866439/75540 for more details
 
 # The Hype
-1. It is trivial to parallelize `misterio-ssh` or the replace `docker compose` with K8s clusters (try and push me back).
-2. You can add git submodules below `roles/` to link recipes (your personal "ansible galaxy" is docker hub!)
-3. No complex stuff to learn: it is just DOCKER!
+1. You can add git submodules below `roles/` to link recipes (your personal "ansible galaxy" is... docker hub!)
+2. No complex stuff to learn: it is just DOCKER!
 
 # Other alternative
 https://github.com/piku/piku is an heroku-like alternative, based on python and not requiring docker.
+
+# Legacy
+The old misterio bash version can be found under [./old_sh_version](./old_sh_version) folder: it is a 4 years old version, which can still be used if want to further reduce depencencies on misterio controlling host.
+
 

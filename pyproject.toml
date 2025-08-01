@@ -1,6 +1,6 @@
 [project]
 name = "misterio"
-version = "1.0.0"
+version = "0.1.0"
 description = "misterio CLI"
 requires-python = ">=3.11"
 dependencies = [
