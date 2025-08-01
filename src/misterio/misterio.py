@@ -21,7 +21,7 @@ def process_role(home, env_full_path, docker_command):
     full_command = ["docker", "compose"]
     full_command.extend(docker_command)
     docker_host = os.environ["DOCKER_HOST"]
-    print(f"{docker_host}\t{role_name} -> {full_command}")
+    print(f"{role_name} \t-> {full_command}")
     os.chdir(dirz)
     shutil.copyfile(env_full_path, ".env")
     try:
@@ -52,6 +52,7 @@ def process_role(home, env_full_path, docker_command):
 )
 @click.option(
     "--single-role",
+    "-r",
     envvar="MISTERIO_SINGLE_ROLE",
     default=None,
     help="Process just one role",
@@ -73,11 +74,11 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
         mistero apply
 
     Verify logs of all services to just one server:
-        misterio --misterio-host wonderboy logs
+        misterio -h wonderboy -- logs --tail 5
     Verify clustered elastic-service on all nodes:
         misterio --single-role elastic-service ps
 
-    Verify elastic service on just two nodes:
+    Verify elastic service on just two nodes, named wonderboy and adam:
 
         misterio -h wonderboy -h adam --single-role elastic-service ps
 
@@ -99,6 +100,7 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
     for mhost in misterio_host_list:
         docker_host = f"ssh://{mhost}"
         os.environ["DOCKER_HOST"] = docker_host
+        print(f"=== {docker_host} ===")
         hosts_path = os.path.join(home, "hosts", mhost)
         for filename in os.listdir(hosts_path):
             # print(filename)
