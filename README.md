@@ -3,7 +3,7 @@ Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*.
 <img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Mysterio Marvel" >
 It is super-easy to use.
 
-*Cool!* The new python version iss easier to use and understand.
+*Cool!* The new python version is easier to use and understand.
 
 Misterio is a python command  you can use to "apply" a set of roles to a infinite numbers of hosts.
 Less then 120 lines of python code HELP INCLUDED (sorry Ansible :)
@@ -69,9 +69,16 @@ to your env path if you plan to bind stuff like
 This will enable your roles to run on Windows and on Linux dameons seamlessly.
 See https://stackoverflow.com/a/52866439/75540 for more details
 
+
 # The Hype
 1. You can add git submodules below `roles/` to link recipes (your personal "ansible galaxy" is... docker hub!)
 2. No complex stuff to learn: it is just DOCKER!
+
+# Podman
+
+Podman is not tested, and it could require a modification to the way the DOCKER_HOST variable is addressed too. anyway, if you are able to create a pull request with a --podman option, I will be happy to merge it.
+
+
 
 # Other alternative
 https://github.com/piku/piku is an heroku-like alternative, based on python and not requiring docker.
