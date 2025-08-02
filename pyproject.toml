@@ -1,11 +1,27 @@
+# Configuration based on tutorial at 
+# https://packaging.python.org/en/latest/tutorials/packaging-projects/
 [project]
 name = "misterio"
 version = "0.1.0"
 description = "misterio CLI"
+authors = [
+  { name="Giovanni Giorgi", email="jj@gioorgi.com" },
+]
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "click>=8.2.1",
 ]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[projects.urls]
+Homepage = "https://github.com/daitangio/misterio"
+Issues = "https://github.com/daitangio/misterio/issues"
 
 [project.scripts]
 misterio = "misterio.misterio:misterio"

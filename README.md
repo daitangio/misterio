@@ -40,7 +40,10 @@ The "apply" pseudo-command will do a `build` and `up` in one step
 # Distributed 
 Because misterio manage the DOCKER_HOST automatically, it is already distributed
 
-# Python version
+# Python official version
+Look at https://pypi.org/project/misterio/ for the latest version
+
+# Python development version
 Install on your virtualenv with
 
 ```sh

@@ -2,6 +2,7 @@
 roles/*/.env
 roles/*/temp
 hosts/*
+*token*
 ### 
 # Byte-compiled / optimized / DLL files
 __pycache__/

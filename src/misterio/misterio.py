@@ -74,8 +74,11 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
         mistero apply
 
     Verify logs of all services to just one server:
+
         misterio -h wonderboy -- logs --tail 5
+    
     Verify clustered elastic-service on all nodes:
+
         misterio --single-role elastic-service ps
 
     Verify elastic service on just two nodes, named wonderboy and adam:
