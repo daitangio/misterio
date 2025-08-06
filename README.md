@@ -1,4 +1,4 @@
-# Misterio: so what?
+# What is Misterio?
 Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*.
 <img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Mysterio Marvel" >
 It is super-easy to use.
@@ -10,35 +10,66 @@ Less then 120 lines of python code HELP INCLUDED (sorry Ansible :)
 
 Misterio is able to manage a set of compose target as an one, appling status changes easily.
 
+## Simple usage example
+
+Suppose to have two hosts called alice and bob. You want to run elasticsearch on both of them, and one gitlab instance on bob.
+So you define:
+
+```sh
+misterio_project/               # Misterio home directory
+├── hosts/
+│   ├── alice/
+│   │   └── elasticsearch.env  # empty file 
+│   └── bob/
+│       └── gitlab.env         # empty file 
+|           elasticsearch.env  # empty file
+└── roles/
+    ├── elasticsearch/
+    │   └── docker-compose.yml
+    └── gitlab/
+        └── docker-compose.yml 
+```
+
+Then running something like
+
+    misterio --home ./misterio_project apply
+
+will build the service and run them.
+To see the log you can use
+
+    misterio --home ./misterio_project -- logs --tail 10
+
+You can further customize the roles, adding variable inside the elasticsearch.env file (like easlitc search cluster details)
+
 
 # Why?
 1. The only dependency is a recent version of `docker` CE  (on target hosts) and `python` 3 (on misterio host). 
-2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon, provided you have little swap (tested)
-3. It is agent-less. It depends only on `docker daemon` on the target. Docker communication is done via ssh and can be further configured via the .ssh/config file (for instance to setup keys, tunneling, etc)
-4. Everything must be versioned to work: you cannot easily "forget" something on your local machine.
+2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon (1GB RAM), provided you have a little swap (tested)
+3. It is agent-less. It depends only on `docker daemon` on the target. Docker communication is done via ssh and can be further configured via the `.ssh/config` file (for instance to setup keys, tunneling, etc)
+4. Everything must be versioned to work: you cannot easily "forget" something on your local machine. It respect the Infrastructure as Code paradigm. 
 
-# How
+# Details on env file
 For every hostname, define a directory inside `hosts/`
 Put in it an `env` file based on this syntax:
 
     <rolename>[@inst].env
 
-where `@inst` is OPTIONAL and can be used to have multiple instances on the same machine.
+where `@inst` is OPTIONAL and can be used to have multiple instances of a role on the same machine. Misterio will configure them one by one.
 
 
 # The magic
 For every role on the target machine misterio will:
-1. copy the correct `env` file.
+1. for each role, copy the correct `env` file calling it .env
 2. pass the command you provide to `docker-compose`
 3. fail fast or loop
 
 The "apply" pseudo-command will do a `build` and `up` in one step
 
-*NEW!* You can use the pseudo command --list to get the list of all the roles, and the --single-role option to restrict only to a role.
+
 
 
 # Distributed 
-Because misterio manage the DOCKER_HOST automatically, it is already distributed
+Because misterio manage the DOCKER_HOST automatically, it is already distributed.
 
 # Python official version
 Look at https://pypi.org/project/misterio/ for the latest version
@@ -64,6 +95,9 @@ For instance, jenkins-with-docker show you how to get a dockerized-jenkins with:
 
 
 # Tips
+
+You can use the pseudo command --list to get the list of all the roles, and the --single-role option to restrict only to a role.
+
 Under docker for Windows, add
 COMPOSE_CONVERT_WINDOWS_PATHS=1
 to your env path if you plan to bind stuff like
