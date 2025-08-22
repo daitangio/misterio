@@ -2,17 +2,23 @@ import os, sys, shutil, subprocess
 import click
 
 
-def is_apply(cmdlist):
+def is_rebuild(cmdlist):
     if len(cmdlist) == 1:
-        if cmdlist[0] == "apply":
+        if cmdlist[0] == "rebuild":
             return True
     return False
 
 
 def process_role(home, env_full_path, docker_command):
+    if is_rebuild(docker_command):
+        # rebuild require two command to run:
+        low_level_pr(home, env_full_path, ["down"])
+        low_level_pr(home, env_full_path, ["up", "--build", "-d"])
+    else:
+        low_level_pr(home, env_full_path, docker_command)
+
+def low_level_pr(home, env_full_path, docker_command):
     env_file = os.path.basename(env_full_path)
-    if is_apply(docker_command):
-        docker_command = ["up", "--build", "-d"]
     if "@" in env_file:
         role_name = env_file.split("@")[0]
     else:
@@ -57,21 +63,14 @@ def process_role(home, env_full_path, docker_command):
     default=None,
     help="Process just one role",
 )
-@click.version_option(version="0.1.0")
+@click.version_option(version="0.1.1")
 @click.argument("docker_command", nargs=-1, type=str)
 def misterio(home, list_flag, misterio_host, single_role, docker_command):
     """M I S T E R I O
     docker compose-based alternative to K8s/Ansible/SaltStack
-
     By default the system will scan all the hostname inside
     $MISTERIO_HOME/hosts/
     and connect to every of them using DOCKER_HOST=ssh://<hostname> for connection
-
-    Examples:
-
-    Ensure everything is configured properly:
-
-        mistero apply
 
     Verify logs of all services to just one server:
 
@@ -84,6 +83,12 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
     Verify elastic service on just two nodes, named wonderboy and adam:
 
         misterio -h wonderboy -h adam --single-role elastic-service ps
+
+    // Special Internal Commands //
+
+    * Rebuild the entire system to ensure everything is configured properly:
+
+        mistero rebuild    
 
     """
     if misterio_host is None or len(misterio_host) == 0:
