@@ -5,8 +5,8 @@ It is super-easy to use.
 
 *Cool!* The new python version is easier to use and understand.
 
-Misterio is a python command  you can use to "apply" a set of roles to a infinite numbers of hosts.
-Less then 150 lines of python code HELP INCLUDED (sorry Ansible :)
+Misterio is a python command you can use to "apply" a set of roles to a infinite numbers of hosts.
+Less then 130 lines of python code HELP INCLUDED (sorry Ansible :)
 
 Misterio is able to manage a set of compose target as an one, appling status changes easily.
 
@@ -38,6 +38,10 @@ will build the service and run them.
 To see the log you can use
 
     misterio --home ./misterio_project -- logs --tail 10
+
+For simple stats on a single host:
+
+    misterio -h xwing -- stats --no-stream
 
 You can further customize the roles, adding variable inside the elasticsearch.env file (like Elastic Search cluster details)
 
