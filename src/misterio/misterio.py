@@ -91,6 +91,9 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
         mistero rebuild    
 
     """
+    return misterio_cmd(home, list_flag, misterio_host, single_role, docker_command)
+
+def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):    
     if misterio_host is None or len(misterio_host) == 0:
         misterio_host_list = os.listdir(os.path.join(home, "hosts"))
     else:

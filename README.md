@@ -86,9 +86,14 @@ Install on your virtualenv with
     misterio --help
 ```
 
+# Support command
+
+*misterio-mv* command can be used to migrate a staless service from one host to another.
+It remove (compose down) the source service, move the env file and then reboot (up -d) the other one.
 
 
-# The Bonus
+
+# The Bonus: stacks
 Misterio is also a collection of ready-made docker-compose infrastructure you can jump into.
 For instance, jenkins-with-docker show you how to get a dockerized-jenkins with:
 
