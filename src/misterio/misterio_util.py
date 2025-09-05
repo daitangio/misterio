@@ -1,10 +1,12 @@
-import os, sys, shutil, subprocess
-import click
-from .misterio import misterio_cmd
 """
 This module contains a set of utility to simplify and improve misterio management.
-It is not required to use misterio, but you will like it 
+It is not required to use misterio, but you will like it
 """
+
+import os, shutil
+import click
+from .misterio import misterio_cmd
+
 
 @click.option(
     "--home",
@@ -16,8 +18,7 @@ It is not required to use misterio, but you will like it
 @click.argument("role", nargs=1, type=str)
 @click.argument("source_host", nargs=1, type=str)
 @click.argument("destination_host", nargs=1, type=str)
-@click.pass_context
-def misterio_mv(ctx, home, role, source_host, destination_host):
+def misterio_mv(home, role, source_host, destination_host):
     """Move a service from a host to another"""
     misterio_cmd(
         home=home,
@@ -48,11 +49,10 @@ def misterio_mv(ctx, home, role, source_host, destination_host):
 @click.command("misterio_mv")
 @click.argument("role", nargs=1, type=str)
 @click.argument("source_host", nargs=1, type=str)
-@click.pass_context
-def misterio_rm(ctx, home, role, source_host):
+def misterio_rm(home, role, source_host):
     """
     Correctly remove a role from one host, ensuring proper cleanup is done.
-    
+
     """
     misterio_cmd(
         home=home,

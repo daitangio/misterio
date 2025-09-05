@@ -17,6 +17,7 @@ def process_role(home, env_full_path, docker_command):
     else:
         low_level_pr(home, env_full_path, docker_command)
 
+
 def low_level_pr(home, env_full_path, docker_command):
     env_file = os.path.basename(env_full_path)
     if "@" in env_file:
@@ -75,7 +76,7 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
     Verify logs of all services to just one server:
 
         misterio -h wonderboy -- logs --tail 5
-    
+
     Verify clustered elastic-service on all nodes:
 
         misterio --single-role elastic-service ps
@@ -88,12 +89,13 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
 
     * Rebuild the entire system to ensure everything is configured properly:
 
-        mistero rebuild    
+        mistero rebuild
 
     """
     return misterio_cmd(home, list_flag, misterio_host, single_role, docker_command)
 
-def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):    
+
+def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
     if misterio_host is None or len(misterio_host) == 0:
         misterio_host_list = os.listdir(os.path.join(home, "hosts"))
     else:
