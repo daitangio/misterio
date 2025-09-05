@@ -25,7 +25,8 @@ Issues = "https://github.com/daitangio/misterio/issues"
 
 [project.scripts]
 misterio = "misterio.misterio:misterio"
-misterio-mv = "misterio.misterio_mv:misterio_mv"
+misterio-mv = "misterio.misterio_util:misterio_mv"
+misterio-rm = "misterio.misterio_util:misterio_rm"
 
 [build-system]
 # Flit Core is a lightweight tool designed to simplify the process of packaging and distributing Python projects

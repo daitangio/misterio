@@ -91,6 +91,7 @@ Install on your virtualenv with
 *misterio-mv* command can be used to migrate a staless service from one host to another.
 It remove (compose down) the source service, move the env file and then reboot (up -d) the other one.
 
+*misterio-rm* command delete a role from a host, ensuring it is destroied and no dandling instances are kept.
 
 
 # The Bonus: stacks
