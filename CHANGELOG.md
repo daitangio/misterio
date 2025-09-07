@@ -1,5 +1,9 @@
 # 0.1.3-dev
 
+New command to initialize a home
+
+# 0.1.2
+
 Added validation of misterio home plus new set of support commands (like misterio-mv and misterio-rm).
 
 
