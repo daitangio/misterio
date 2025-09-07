@@ -28,13 +28,23 @@ def low_level_pr(home, env_full_path, docker_command):
     full_command = ["docker", "compose"]
     full_command.extend(docker_command)
     docker_host = os.environ["DOCKER_HOST"]
-    print(f"{role_name} \t-> {full_command}")
+    print(f"==== {role_name} \t-> {full_command}")
     os.chdir(dirz)
     shutil.copyfile(env_full_path, ".env")
     try:
         subprocess.run(full_command, check=True)
     except subprocess.CalledProcessError as e:
         print(f"{docker_host}::{role_name} Failed with return code {e.returncode}")
+
+def verify_misterio_home(home:str):
+    error_count=0
+    for d in ["hosts", "roles"]:
+        pathz=os.path.join(home,d)
+        if not os.path.isdir(pathz):
+            print(f"FATAL: Missed required directory {pathz}")
+            error_count+=1
+    if error_count > 0:
+        raise Exception(f"home dir has {error_count} validation errors")
 
 
 @click.command("misterio")
@@ -64,7 +74,7 @@ def low_level_pr(home, env_full_path, docker_command):
     default=None,
     help="Process just one role",
 )
-@click.version_option(version="0.1.1")
+@click.version_option(version="0.1.2")
 @click.argument("docker_command", nargs=-1, type=str)
 def misterio(home, list_flag, misterio_host, single_role, docker_command):
     """M I S T E R I O
@@ -96,6 +106,7 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
 
 
 def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
+    verify_misterio_home(home)
     if misterio_host is None or len(misterio_host) == 0:
         misterio_host_list = os.listdir(os.path.join(home, "hosts"))
     else:
