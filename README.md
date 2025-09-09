@@ -24,10 +24,12 @@ misterio_project/               # Misterio home directory
 │       └── gitlab.env         # empty file 
 |           elasticsearch.env  # empty file
 └── roles/
-    ├── elasticsearch/
-    │   └── docker-compose.yml
-    └── gitlab/
-        └── docker-compose.yml 
+|   ├── elasticsearch/
+|   │   └── docker-compose.yml
+|   └── gitlab/
+|       └── docker-compose.yml 
+|
+└── attic/        # This is a special folder used by support utilities
 ```
 
 Then running something like
@@ -86,12 +88,22 @@ Install on your virtualenv with
     misterio --help
 ```
 
-# Support command
+# Support commands
 
-*misterio-mv* command can be used to migrate a staless service from one host to another.
+*misterio-add* add a role to a host, checking if it does not exists.
+
+*misterio-mv* command can be used to migrate a stateless service from one host to another.
 It remove (compose down) the source service, move the env file and then reboot (up -d) the other one.
 
 *misterio-rm* command delete a role from a host, ensuring it is destroied and no dandling instances are kept.
+Because env file are valuable (they can contain secrets and important configs) the command move them in a special "attic" directory, you can recover from.
+
+!! The support command are not required to run misterio. They are provided to leverage devops pipeline with a consistent way of manipulating misterio ecosystem.
+
+## About localhost
+To be able to test misterio we designed also ability to manage localhost hostname.
+Refrain from using localhost as a hostname in production, to avoid potential bug.
+This feature can be removed in the future and it is not part of the misterio specification.
 
 
 # The Bonus: stacks

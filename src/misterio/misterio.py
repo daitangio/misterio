@@ -27,7 +27,7 @@ def low_level_pr(home, env_full_path, docker_command):
     dirz = os.path.join(home, "roles", role_name)
     full_command = ["docker", "compose"]
     full_command.extend(docker_command)
-    docker_host = os.environ["DOCKER_HOST"]
+    docker_host = os.getenv("DOCKER_HOST","")
     print(f"==== {role_name} \t-> {full_command}")
     os.chdir(dirz)
     shutil.copyfile(env_full_path, ".env")
@@ -38,7 +38,7 @@ def low_level_pr(home, env_full_path, docker_command):
 
 def verify_misterio_home(home:str):
     error_count=0
-    for d in ["hosts", "roles"]:
+    for d in ["hosts", "roles", "attic"]:
         pathz=os.path.join(home,d)
         if not os.path.isdir(pathz):
             print(f"FATAL: Missed required directory {pathz}")
@@ -123,7 +123,11 @@ def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
         sys.exit(0)
     for mhost in misterio_host_list:
         docker_host = f"ssh://{mhost}"
-        os.environ["DOCKER_HOST"] = docker_host
+        # GG: Localhost does not require docker_host
+        if mhost!="localhost":
+            os.environ["DOCKER_HOST"] = docker_host
+        else:
+            pass # del os.environ["DOCKER_HOST"]
         print(f"=== {docker_host} ===")
         hosts_path = os.path.join(home, "hosts", mhost)
         for filename in os.listdir(hosts_path):

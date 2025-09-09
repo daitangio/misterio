@@ -1,0 +1,5 @@
+# docker pull 
+services:
+  postgresdb:
+    image: pgvector/pgvector:0.8.1-pg17-trixie
+    
