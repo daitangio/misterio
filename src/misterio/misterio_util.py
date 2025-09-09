@@ -46,7 +46,7 @@ def misterio_mv(home, role, source_host, destination_host):
     default=os.getenv("PWD", ""),
     help="Home of hosts and roles folders. Can be set with MISTERIO_HOME",
 )
-@click.command("misterio_mv")
+@click.command("misterio_rm")
 @click.argument("role", nargs=1, type=str)
 @click.argument("source_host", nargs=1, type=str)
 def misterio_rm(home, role, source_host):
