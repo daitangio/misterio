@@ -1,5 +1,14 @@
-# docker pull 
+# Stack taken from https://github.com/pgvector/pgvector
+# Ideas from https://www.tigerdata.com/blog/postgresql-as-a-vector-database-using-pgvector
 services:
   postgresdb:
     image: pgvector/pgvector:0.8.1-pg17-trixie
-    
+    # Make postgresql accessible
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "postgres"
+    labels:
+      - "com.centurylinklabs.watchtower.scope=upgrademe"
