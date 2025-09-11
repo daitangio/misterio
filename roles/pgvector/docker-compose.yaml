@@ -5,7 +5,7 @@ services:
     image: pgvector/pgvector:0.8.1-pg17-trixie
     # Make postgresql accessible
     ports:
-      - "5432:5432"
+      - "${MISTERIO_MAGIPORT}:5432"
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "password"

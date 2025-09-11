@@ -1,8 +1,10 @@
-# Misterio specific
+### Misterio specific
 roles/*/.env
 roles/*/temp
 hosts/*
 *token*
+attic/*
+##############
 ### 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -212,5 +214,3 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# Codespaces extra
-hosts/codespaces*

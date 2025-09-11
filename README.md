@@ -59,7 +59,7 @@ Put in it an `env` file based on this syntax:
 
     <rolename>[@inst].env
 
-where `@inst` is OPTIONAL and can be used to have multiple instances of a role on the same machine. Misterio will configure them one by one.
+where `@inst` is OPTIONAL and can be used to have multiple instances of a role on the same machine. Misterio will configure them one by one (see below misterio-add)
 
 
 # The magic
@@ -90,11 +90,16 @@ Install on your virtualenv with
 
 # Support commands
 
+## misterio-add
 *misterio-add* add a role to a host, checking if it does not exists.
 
+It leverage on COMPOSE_PROJECT_NAME variable to define different compose instances.
+
+## misterio-mv
 *misterio-mv* command can be used to migrate a stateless service from one host to another.
 It remove (compose down) the source service, move the env file and then reboot (up -d) the other one.
 
+## misterio-rm
 *misterio-rm* command delete a role from a host, ensuring it is destroied and no dandling instances are kept.
 Because env file are valuable (they can contain secrets and important configs) the command move them in a special "attic" directory, you can recover from.
 
