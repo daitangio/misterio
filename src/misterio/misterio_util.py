@@ -135,7 +135,7 @@ def misterio_add(home, target_host, role_list):
             print(f"FATAL: Role {role} already exists as {empty_file}")
             return
         # init a set of properties
-        with open(empty_file, "w") as f:
+        with open(empty_file, "w",encoding="UTF-8") as f:
             write_prop("MISTERIO_CREATION_USER", os.getenv("USER", "unknown"), f)
             write_prop(
                 "MISTERIO_CREATION_DATE",
