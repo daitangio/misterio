@@ -38,7 +38,7 @@ def low_level_pr(home, env_full_path, docker_command):
 
 def verify_misterio_home(home:str):
     error_count=0
-    for d in ["hosts", "roles", "attic"]:
+    for d in ["hosts", "roles"]:
         pathz=os.path.join(home,d)
         if not os.path.isdir(pathz):
             print(f"FATAL: Missed required directory {pathz}")
@@ -124,7 +124,7 @@ def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
     for mhost in misterio_host_list:
         docker_host = f"ssh://{mhost}"
         # GG: Localhost does not require docker_host
-        if mhost!="localhost":
+        if "localhost" not in mhost:
             os.environ["DOCKER_HOST"] = docker_host
         else:
             pass # del os.environ["DOCKER_HOST"]

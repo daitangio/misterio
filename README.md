@@ -29,7 +29,7 @@ misterio_project/               # Misterio home directory
 |   └── gitlab/
 |       └── docker-compose.yml 
 |
-└── attic/        # This is a special folder used by support utilities
+└── attic/    # This is a special folder used by support utilities: it is automatically created
 ```
 
 Then running something like
@@ -100,10 +100,10 @@ Because env file are valuable (they can contain secrets and important configs) t
 
 !! The support command are not required to run misterio. They are provided to leverage devops pipeline with a consistent way of manipulating misterio ecosystem.
 
-## About localhost
-To be able to test misterio we designed also ability to manage localhost hostname.
-Refrain from using localhost as a hostname in production, to avoid potential bug.
-This feature can be removed in the future and it is not part of the misterio specification.
+## About special localhost hostname
+To be able to test misterio we designed also ability to manage magic hostname 
+containing localhost, with special meaning.
+Refrain from using it in production, to avoid potential bug.
 
 
 # The Bonus: stacks
