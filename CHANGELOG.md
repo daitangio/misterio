@@ -1,4 +1,4 @@
-# 0.1.3
+# 0.1.4-dev
 
 New command to initialize a home
 misterio-rm bugfix (it was not working)

@@ -5,5 +5,5 @@ The magic is done with
 ```sh
 python3 -m build
 python3 -m twine upload dist/*
-git tag 0.1.3 # Tag the new version baby
+git tag 0.1.4-dev # Tag the new version baby
 ```
