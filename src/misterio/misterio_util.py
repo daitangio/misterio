@@ -3,11 +3,10 @@ This module contains a set of utility to simplify and improve misterio managemen
 It is not required to use misterio, but you will like it
 """
 
-import os, shutil, re, random
+import os, shutil, re
 from datetime import datetime
 import click
 from .misterio import misterio_cmd
-
 
 
 @click.option(
@@ -80,7 +79,7 @@ def misterio_rm(home, source_host, role_list):
 
 
 def write_prop(key, value, f):
-    if " " in value:
+    if not isinstance(value, str) or (" " in value):
         prop = f'{key.upper()}="{value}"'
     else:
         prop = f"{key.upper()}={value}"
@@ -97,15 +96,18 @@ def determine_instance_name(role):
         instance_name = match.group(2)
         return (match.group(1) + "_" + instance_name).lower()
 
+
 def determine_fixed_port(role, base_port=7000):
     if "@" in role:
         match = re.match(r"(.*)@(.*)", role)
         instance_name = match.group(2)
-        idx=int(instance_name)
+        idx = int(str(int(instance_name, 36))[0:2])
     else:
-        idx=0
-    computed_port = idx+100*random.randint(1,100)
-    return str(computed_port + base_port + idx)
+        idx = 0
+    # FIXME: Still pretty weak
+    computed_port = len(role)
+    return computed_port + base_port + idx
+
 
 @click.option(
     "--home",
@@ -121,12 +123,14 @@ def misterio_add(home, target_host, role_list):
     role can contain @inst to create multiple isstances like pippo@inst2
     For example
 
-    misterio-add xwing pgvector@1 pgvector@2 
+    misterio-add xwing pgvector@1 pgvector@2
 
     To simplify initialization, misterio-add will add some default variables starting with MISTERIO_
     You can use them to parametrize your stack easily
 
+    By default misrerio-add init a build
     """
+    base_port = 7000
     for role in role_list:
         target_dir = os.path.join(home, "hosts", target_host)
         os.makedirs(target_dir, exist_ok=True)
@@ -135,7 +139,7 @@ def misterio_add(home, target_host, role_list):
             print(f"FATAL: Role {role} already exists as {empty_file}")
             return
         # init a set of properties
-        with open(empty_file, "w",encoding="UTF-8") as f:
+        with open(empty_file, "w", encoding="UTF-8") as f:
             write_prop("MISTERIO_CREATION_USER", os.getenv("USER", "unknown"), f)
             write_prop(
                 "MISTERIO_CREATION_DATE",
@@ -144,11 +148,14 @@ def misterio_add(home, target_host, role_list):
             )
             # See https://stackoverflow.com/questions/44924082/set-project-name-in-docker-compose-file
             write_prop("COMPOSE_PROJECT_NAME", determine_instance_name(role), f)
-            write_prop("MISTERIO_MAGIPORT", determine_fixed_port(role), f)
+            portz = determine_fixed_port(role, base_port)
+            write_prop("MISTERIO_MAGIPORT", portz, f)
+            # Increase base port next
+            base_port = portz + 1
         misterio_cmd(
             home=home,
             list_flag=None,
             misterio_host=[target_host],
             single_role=role,
-            docker_command=["up", "-d"],
+            docker_command=["build"],
         )

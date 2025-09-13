@@ -27,7 +27,7 @@ def low_level_pr(home, env_full_path, docker_command):
     dirz = os.path.join(home, "roles", role_name)
     full_command = ["docker", "compose"]
     full_command.extend(docker_command)
-    docker_host = os.getenv("DOCKER_HOST","")
+    docker_host = os.getenv("DOCKER_HOST", "")
     print(f"==== {role_name} \t-> {full_command}")
     os.chdir(dirz)
     shutil.copyfile(env_full_path, ".env")
@@ -36,13 +36,14 @@ def low_level_pr(home, env_full_path, docker_command):
     except subprocess.CalledProcessError as e:
         print(f"{docker_host}::{role_name} Failed with return code {e.returncode}")
 
-def verify_misterio_home(home:str):
-    error_count=0
+
+def verify_misterio_home(home: str):
+    error_count = 0
     for d in ["hosts", "roles"]:
-        pathz=os.path.join(home,d)
+        pathz = os.path.join(home, d)
         if not os.path.isdir(pathz):
             print(f"FATAL: Missed required directory {pathz}")
-            error_count+=1
+            error_count += 1
     if error_count > 0:
         raise Exception(f"home dir has {error_count} validation errors")
 
@@ -79,27 +80,34 @@ def verify_misterio_home(home:str):
 def misterio(home, list_flag, misterio_host, single_role, docker_command):
     """M I S T E R I O
     docker compose-based alternative to K8s/Ansible/SaltStack
-    By default the system will scan all the hostname inside
-    $MISTERIO_HOME/hosts/
-    and connect to every of them using DOCKER_HOST=ssh://<hostname> for connection
 
-    Verify logs of all services to just one server:
+        By default the system will scan all the hostname inside
 
-        misterio -h wonderboy -- logs --tail 5
+        $MISTERIO_HOME/hosts/
 
-    Verify clustered elastic-service on all nodes:
+        and connect to every of them
 
-        misterio --single-role elastic-service ps
+        Verify logs of all services:
 
-    Verify elastic service on just two nodes, named wonderboy and adam:
+        misterio -- logs --tail 5
 
-        misterio -h wonderboy -h adam --single-role elastic-service ps
+        Verify logs of all services to just one server:
 
-    // Special Internal Commands //
+            misterio -h wonderboy -- logs --tail 5
 
-    * Rebuild the entire system to ensure everything is configured properly:
+        Verify clustered elastic-service on all nodes:
 
-        mistero rebuild
+            misterio --single-role elastic-service ps
+
+        Verify elastic service on just two nodes, named wonderboy and adam:
+
+            misterio -h wonderboy -h adam --single-role elastic-service ps
+
+        // Special Internal Commands //
+
+        * rebuild the entire system to ensure everything is configured properly:
+
+            misterio rebuild
 
     """
     return misterio_cmd(home, list_flag, misterio_host, single_role, docker_command)
@@ -127,7 +135,7 @@ def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
         if "localhost" not in mhost:
             os.environ["DOCKER_HOST"] = docker_host
         else:
-            pass # del os.environ["DOCKER_HOST"]
+            pass  # del os.environ["DOCKER_HOST"]
         print(f"=== {docker_host} ===")
         hosts_path = os.path.join(home, "hosts", mhost)
         for filename in os.listdir(hosts_path):
