@@ -1,7 +1,10 @@
-# 0.1.3-dev
+# 0.1.3
 
 New command to initialize a home
 misterio-rm bugfix (it was not working)
+
+misterio-add uses the COMPOSE_PROJECT_NAME to support multiple instances in the same host
+Port number generation is still experimental.
 
 # 0.1.2 :deprecated:
 
