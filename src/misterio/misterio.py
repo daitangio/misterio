@@ -2,18 +2,26 @@ import os, sys, shutil, subprocess
 import click
 
 
-def is_rebuild(cmdlist):
-    if len(cmdlist) == 1:
-        if cmdlist[0] == "rebuild":
-            return True
-    return False
-
-
 def process_role(home, env_full_path, docker_command):
-    if is_rebuild(docker_command):
-        # rebuild require two command to run:
-        low_level_pr(home, env_full_path, ["down"])
-        low_level_pr(home, env_full_path, ["up", "--build", "-d"])
+    """Manage also alias"""
+    print(docker_command)
+    if (
+        len(docker_command) == 1
+        and len(docker_command[0]) >= 2
+        and docker_command[0][0] == "@"
+    ):
+        # Process alias
+        aliascmd = docker_command[0]
+        if aliascmd == "@rebuild":
+            # rebuild require two command to run:
+            low_level_pr(home, env_full_path, ["down"])
+            low_level_pr(home, env_full_path, ["up", "--build", "-d"])
+        elif aliascmd == "@refresh":
+            low_level_pr(home, env_full_path, ["pull"])
+            low_level_pr(home, env_full_path, ["down"])
+            low_level_pr(home, env_full_path, ["up", "--build", "-d"])
+        else:
+            raise Exception("Unknown alias:" + aliascmd)
     else:
         low_level_pr(home, env_full_path, docker_command)
 
@@ -105,9 +113,10 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
 
         // Special Internal Commands //
 
-        * rebuild the entire system to ensure everything is configured properly:
+        * @rebuild the entire system to ensure everything is configured properly:
+        * @refresh pull the new images, and then run rebuild
 
-            misterio rebuild
+            misterio @rebuild
 
     """
     return misterio_cmd(home, list_flag, misterio_host, single_role, docker_command)

@@ -6,9 +6,9 @@ It is super-easy to use.
 *Cool!* The new python version is easier to use and understand.
 
 Misterio is a python command you can use to "apply" a set of roles to a infinite numbers of hosts.
-Less then 150 lines of python code HELP INCLUDED (sorry Ansible :)
+Less then 170 lines of python code HELP INCLUDED (sorry Ansible :)
 
-Misterio is able to manage a set of compose target as an one, appling status changes easily.
+Misterio is able to manage a set of compose target as an one, applying status changes easily.
 
 ## Simple usage example
 
@@ -47,13 +47,15 @@ For simple stats on a single host:
 
 You can further customize the roles, adding variable inside the elasticsearch.env file (like Elastic Search cluster details)
 
-# Why?
+## Why?
+
 1. The only dependency is a recent version of `docker` CE  (on target hosts) and `python` 3 (on misterio host). 
 2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon (1GB RAM), provided you have a little swap (tested)
 3. It is agent-less. It depends only on `docker daemon` on the target. Docker communication is done via ssh and can be further configured via the `.ssh/config` file (for instance to setup keys, tunneling, etc)
 4. Everything must be versioned to work: you cannot easily "forget" something on your local machine. It respect the Infrastructure as Code paradigm. 
 
-# Details on env file
+## Details on env file
+
 For every hostname, define a directory inside `hosts/`
 Put in it an `env` file based on this syntax:
 
@@ -62,23 +64,26 @@ Put in it an `env` file based on this syntax:
 where `@inst` is OPTIONAL and can be used to have multiple instances of a role on the same machine. Misterio will configure them one by one (see below misterio-add)
 
 
-# The magic
+## The magic
+
 For every role on the target machine misterio will:
 1. for each role, copy the correct `env` file calling it .env
 2. pass the command you provide to `docker-compose`
 3. fail fast or loop
 
-The "rebuild" pseudo-command will do a `down` + `build` and `up` in one step.
+The "@rebuild" pseudo-command will do a `down` + `build` and `up` in one step.
+The "@refresh" will also pull data.
 
+## Distributed
 
-
-# Distributed 
 Because misterio manage the DOCKER_HOST automatically, it is already distributed.
 
-# Python official version
+## Python official version
+
 Look at https://pypi.org/project/misterio/ for the latest version
 
-# Python development version
+## Python development version
+
 Install on your virtualenv with
 
 ```sh
@@ -88,30 +93,30 @@ Install on your virtualenv with
     misterio --help
 ```
 
-# Support commands
+## Support commands
 
-## misterio-add
+### misterio-add
 *misterio-add* add a role to a host, checking if it does not exists.
 
 It leverage on COMPOSE_PROJECT_NAME variable to define different compose instances.
 
-## misterio-mv
+### misterio-mv
 *misterio-mv* command can be used to migrate a stateless service from one host to another.
 It remove (compose down) the source service, move the env file and then reboot (up -d) the other one.
 
-## misterio-rm
+### misterio-rm
 *misterio-rm* command delete a role from a host, ensuring it is destroied and no dandling instances are kept.
 Because env file are valuable (they can contain secrets and important configs) the command move them in a special "attic" directory, you can recover from.
 
 !! The support command are not required to run misterio. They are provided to leverage devops pipeline with a consistent way of manipulating misterio ecosystem.
 
-## About special localhost hostname
+### About special localhost hostname
 To be able to test misterio we designed also ability to manage magic hostname 
 containing localhost, with special meaning.
 Refrain from using it in production, to avoid potential bug.
 
 
-# The Bonus: stacks
+## The Bonus: stacks
 Misterio is also a collection of ready-made docker-compose infrastructure you can jump into.
 For instance, jenkins-with-docker show you how to get a dockerized-jenkins with:
 
@@ -119,7 +124,7 @@ For instance, jenkins-with-docker show you how to get a dockerized-jenkins with:
 - access to docker daemon to self-build stuff using docker plugin
 
 
-# Tips
+## Tips
 
 You can use the pseudo command --list to get the list of all the roles, and the --single-role option to restrict only to a role.
 
@@ -132,7 +137,7 @@ This will enable your roles to run on Windows and on Linux dameons seamlessly.
 See https://stackoverflow.com/a/52866439/75540 for more details
 
 
-# The Hype
+## The Hype
 1. You can add git submodules below `roles/` to link recipes (your personal "ansible galaxy" is... docker hub!)
 2. No complex stuff to learn: it is just DOCKER!
 
