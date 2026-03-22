@@ -1,10 +1,14 @@
-# 0.1.4-dev
+# 0.1.5-dev
+# 0.1.4
 
 New command to initialize a home
 misterio-rm bugfix (it was not working)
 
 misterio-add uses the COMPOSE_PROJECT_NAME to support multiple instances in the same host
 Port number generation is still experimental.
+Changed alias: now they start with @
+Replace "rebuild" with @rebuild"
+Added new alias "@upgrade"
 
 # 0.1.2 :deprecated:
 

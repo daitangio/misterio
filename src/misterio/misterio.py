@@ -16,7 +16,7 @@ def process_role(home, env_full_path, docker_command):
             # rebuild require two command to run:
             low_level_pr(home, env_full_path, ["down"])
             low_level_pr(home, env_full_path, ["up", "--build", "-d"])
-        elif aliascmd == "@refresh":
+        elif aliascmd == "@upgrade":
             low_level_pr(home, env_full_path, ["pull"])
             low_level_pr(home, env_full_path, ["down"])
             low_level_pr(home, env_full_path, ["up", "--build", "-d"])
@@ -83,7 +83,7 @@ def verify_misterio_home(home: str):
     default=None,
     help="Process just one role",
 )
-@click.version_option(version="0.1.4-dev")
+@click.version_option(version="0.1.4")
 @click.argument("docker_command", nargs=-1, type=str)
 def misterio(home, list_flag, misterio_host, single_role, docker_command):
     """M I S T E R I O
@@ -114,7 +114,7 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
         // Special Internal Commands //
 
         * @rebuild the entire system to ensure everything is configured properly:
-        * @refresh pull the new images, and then run rebuild
+        * @upgrade pull the images again, and then run rebuild, with minimal disruption
 
             misterio @rebuild
 
