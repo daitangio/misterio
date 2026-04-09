@@ -143,9 +143,11 @@ def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
         # GG: Localhost does not require docker_host
         if "localhost" not in mhost:
             os.environ["DOCKER_HOST"] = docker_host
+            print(f"=== {docker_host} ===")
         else:
-            pass  # del os.environ["DOCKER_HOST"]
-        print(f"=== {docker_host} ===")
+            #del os.environ["DOCKER_HOST"]
+            os.environ["DOCKER_HOST"]=""
+            print(f"=== localhost ===")
         hosts_path = os.path.join(home, "hosts", mhost)
         for filename in os.listdir(hosts_path):
             # print(filename)
