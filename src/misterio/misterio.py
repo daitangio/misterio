@@ -113,8 +113,9 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
 
         // Special Internal Commands //
 
-        * @rebuild the entire system to ensure everything is configured properly:
-        * @upgrade pull the images again, and then run rebuild, with minimal disruption
+        * @rebuild make a compose down/up to ensure everything is configured properly
+
+        * @upgrade pull the images again, and then run @rebuild, with minimal disruption
 
             misterio @rebuild
 
