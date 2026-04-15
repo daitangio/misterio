@@ -116,9 +116,12 @@ def determine_fixed_port(role, base_port=7000):
     help="Home of hosts and roles folders. Can be set with MISTERIO_HOME",
 )
 @click.command("misterio_add")
+@click.option(
+    "--build/--no-build", "build_flag", default=False, help="Optionally build"
+)
 @click.argument("target_host", nargs=1, type=str)
 @click.argument("role_list", nargs=-1, type=str)
-def misterio_add(home, target_host, role_list):
+def misterio_add(home, target_host, role_list, build_flag):
     """Add a role and pull the required images on the target host
     role can contain @inst to create multiple isstances like pippo@inst2
     For example
@@ -128,7 +131,7 @@ def misterio_add(home, target_host, role_list):
     To simplify initialization, misterio-add will add some default variables starting with MISTERIO_
     You can use them to parametrize your stack easily
 
-    By default misrerio-add init a build
+    By default misrerio-add does not init a build
     """
     base_port = 7000
     for role in role_list:
@@ -147,15 +150,19 @@ def misterio_add(home, target_host, role_list):
                 f,
             )
             # See https://stackoverflow.com/questions/44924082/set-project-name-in-docker-compose-file
-            write_prop("COMPOSE_PROJECT_NAME", determine_instance_name(role), f)
+            #write_prop("COMPOSE_PROJECT_NAME", determine_instance_name(role), f)
+            iup=determine_instance_name(role).upper()        
+            ilo=determine_instance_name(role).lower()
+            write_prop(f"{iup}_HOME",f"/opt/{ilo}",f)
             portz = determine_fixed_port(role, base_port)
             write_prop("MISTERIO_MAGIPORT", portz, f)
             # Increase base port next
             base_port = portz + 1
-        misterio_cmd(
-            home=home,
-            list_flag=None,
-            misterio_host=[target_host],
-            single_role=role,
-            docker_command=["build"],
-        )
+        if build_flag:
+            misterio_cmd(
+                home=home,
+                list_flag=None,
+                misterio_host=[target_host],
+                single_role=role,
+                docker_command=["build"],
+            )
