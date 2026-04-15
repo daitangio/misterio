@@ -1,6 +1,9 @@
 # 0.1.5-dev
 
-New command to initialize a home
+
++ misterio_add do not make a build by default
++ Better warning for unknown env files
+
 
 ## 0.1.4
 

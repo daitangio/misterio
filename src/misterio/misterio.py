@@ -146,7 +146,7 @@ def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
             os.environ["DOCKER_HOST"] = docker_host
             print(f"=== {docker_host} ===")
         else:
-            #del os.environ["DOCKER_HOST"]
+            #  In localhost mode trust context to work on
             os.environ["DOCKER_HOST"]=""
             print(f"=== localhost ===")
         hosts_path = os.path.join(home, "hosts", mhost)
@@ -162,3 +162,5 @@ def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
                         process_role(
                             home, os.path.join(hosts_path, filename), docker_command
                         )
+            else:
+                print(f"WARN Ignored not-env file: {filename}")

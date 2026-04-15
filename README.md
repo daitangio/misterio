@@ -87,7 +87,7 @@ Look at https://pypi.org/project/misterio/ for the latest version
 Install on your virtualenv with
 
 ```sh
-    python -m venv .venv
+    python3 -m venv .venv
     . .venv/bin/activate
     pip install -e .
     misterio --help
