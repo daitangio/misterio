@@ -3,7 +3,8 @@ Follow instruction at https://packaging.python.org/en/latest/tutorials/packaging
 The magic is done with
 
 ```sh
-python3 -m build
+pip install build
+python3 -m build twine
 python3 -m twine upload dist/*
-git tag 0.1.5-dev # Tag the new version baby
+git tag 0.1.5 # Tag the new version baby
 ```
