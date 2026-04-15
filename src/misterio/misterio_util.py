@@ -104,7 +104,7 @@ def determine_fixed_port(role, base_port=7000):
         idx = int(str(int(instance_name, 36))[0:2])
     else:
         idx = 0
-    # FIXME: Still pretty weak
+    # Still pretty weak but stable and consistent
     computed_port = len(role)
     return computed_port + base_port + idx
 
@@ -149,11 +149,12 @@ def misterio_add(home, target_host, role_list, build_flag):
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 f,
             )
-            # See https://stackoverflow.com/questions/44924082/set-project-name-in-docker-compose-file
-            #write_prop("COMPOSE_PROJECT_NAME", determine_instance_name(role), f)
-            iup=determine_instance_name(role).upper()        
-            ilo=determine_instance_name(role).lower()
-            write_prop(f"{iup}_HOME",f"/opt/{ilo}",f)
+            # See
+            # https://stackoverflow.com/questions/44924082/set-project-name-in-docker-compose-file
+            # write_prop("COMPOSE_PROJECT_NAME", determine_instance_name(role), f)
+            iup = determine_instance_name(role).upper()
+            ilo = determine_instance_name(role).lower()
+            write_prop(f"{iup}_HOME", f"/opt/{ilo}", f)
             portz = determine_fixed_port(role, base_port)
             write_prop("MISTERIO_MAGIPORT", portz, f)
             # Increase base port next
