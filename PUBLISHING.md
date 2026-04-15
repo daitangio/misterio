@@ -6,5 +6,5 @@ The magic is done with
 pip install build
 python3 -m build twine
 python3 -m twine upload dist/*
-git tag 0.1.5 # Tag the new version baby
+git tag 0.1.6-dev # Tag the new version baby
 ```

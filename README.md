@@ -6,7 +6,7 @@ It is super-easy to use.
 *Cool!* The new python version is easier to use and understand.
 
 Misterio is a python command you can use to "apply" a set of roles to a infinite numbers of hosts.
-Less then 170 lines of python code HELP INCLUDED (sorry Ansible :)
+Less then 200 lines of python code HELP INCLUDED (sorry Ansible :)
 
 Misterio is able to manage a set of compose target as an one, applying status changes easily.
 
@@ -16,13 +16,16 @@ Suppose to have two hosts called alice and bob. You want to run elasticsearch on
 So you define:
 
 ```sh
-misterio_project/               # Misterio home directory
+misterio_project/              # Misterio home directory
 ├── hosts/
+|   | 
+|   ├── misterio.toml          # optional extended configuration (see below)
 │   ├── alice/
 │   │   └── elasticsearch.env  # empty file 
 │   └── bob/
 │       └── gitlab.env         # empty file 
 |           elasticsearch.env  # empty file
+
 └── roles/
 |   ├── elasticsearch/
 |   │   └── docker-compose.yml
@@ -78,6 +81,19 @@ The "@refresh" will also pull data.
 
 Because misterio manage the DOCKER_HOST automatically, it is already distributed.
 
+## About extended configuration
+
+Working with orbstack I faced some troubles because of how orbstack configure the docker client.
+
+orbstack uses docker "context" which is a smart way to define a lot of access configurations in docker.
+The trouble is orbstack define a new default which do not play nice with my setup.
+
+Docker context are more flexible than hostname, but hostname are very easy to understand, and we want to try to be forward compatible.
+
+Parsing of extended configuration is available from version 1.6 onwards and it is totally optional. 
+You also require Python 3.11+
+
+
 ## Python official version
 
 Look at https://pypi.org/project/misterio/ for the latest version
@@ -111,9 +127,8 @@ Because env file are valuable (they can contain secrets and important configs) t
 !! The support command are not required to run misterio. They are provided to leverage devops pipeline with a consistent way of manipulating misterio ecosystem.
 
 ### About special localhost hostname
-To be able to test misterio we designed also ability to manage magic hostname 
-containing localhost, with special meaning.
-Refrain from using it in production, to avoid potential bug.
+Localhost hostname support was dropped in favor of misterio.toml extended configuration.
+
 
 
 ## The Bonus: stacks

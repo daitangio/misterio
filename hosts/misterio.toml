@@ -1,0 +1,13 @@
+# Wellcome to Misterio Totally Optional configuration file (Mito)
+# For format syntax see https://toml.io/en/
+[_system]
+# Which version is supported of this file?
+misterio_api=1.6
+logging_level="debug"
+
+# Orbstack machine extra configuration example
+[orbstack.docker]
+context="orbstack"
+host=""
+
+

@@ -1,4 +1,4 @@
 services:
   say-hello:
     image: alpine:latest
-    command: echo Misterio Works
+    command: sh -c "echo Misterio Works Hostname `hostname` Date `date`"

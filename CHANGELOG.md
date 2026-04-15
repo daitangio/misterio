@@ -1,5 +1,11 @@
-# 0.1.5
+# 0.1.6-dev
 
++ added ability to manage contexts
++ polished logging  
+  Try
+    misterio --home $PWD  -h orbstack up
+
+# 0.1.5
 
 + misterio_add do not make a build by default
 + Better warning for unknown env files

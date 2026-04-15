@@ -1,10 +1,11 @@
 import os, sys, shutil, subprocess
 import click
+import tomllib
 
 
 def process_role(home, env_full_path, docker_command):
     """Manage also alias"""
-    print(docker_command)
+    # print(docker_command)
     if (
         len(docker_command) == 1
         and len(docker_command[0]) >= 2
@@ -36,7 +37,7 @@ def low_level_pr(home, env_full_path, docker_command):
     full_command = ["docker", "compose"]
     full_command.extend(docker_command)
     docker_host = os.getenv("DOCKER_HOST", "")
-    print(f"==== {role_name} \t-> {full_command}")
+    print(f"==== {docker_host} {role_name} \t-> {full_command}")
     os.chdir(dirz)
     shutil.copyfile(env_full_path, ".env")
     try:
@@ -54,6 +55,26 @@ def verify_misterio_home(home: str):
             error_count += 1
     if error_count > 0:
         raise Exception(f"home dir has {error_count} validation errors")
+
+
+def load_misterio_config(config_file_name, host_target):
+    if os.path.exists(config_file_name):
+        with open(config_file_name, "rb") as config_file:
+            main_config = tomllib.load(config_file).get(host_target, {})
+            # Fast exit
+            if len(main_config) == 0:
+                return
+            print(f"Config for {host_target}: {main_config}")
+            if "docker" in main_config:
+                config = main_config["docker"]
+                if "context" in config:
+                    context = config["context"]
+                    os.environ["DOCKER_CONTEXT"] = context
+                if "host" in config:
+                    docker_host = config["host"]
+                    os.environ["DOCKER_HOST"] = docker_host
+    else:
+        print(f"{config_file_name} not defined (see documentation for happy features)")
 
 
 @click.command("misterio")
@@ -83,7 +104,7 @@ def verify_misterio_home(home: str):
     default=None,
     help="Process just one role",
 )
-@click.version_option(version="0.1.5")
+@click.version_option(version="0.1.6-dev")
 @click.argument("docker_command", nargs=-1, type=str)
 def misterio(home, list_flag, misterio_host, single_role, docker_command):
     """M I S T E R I O
@@ -126,10 +147,12 @@ def misterio(home, list_flag, misterio_host, single_role, docker_command):
 def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
     verify_misterio_home(home)
     if misterio_host is None or len(misterio_host) == 0:
-        misterio_host_list = os.listdir(os.path.join(home, "hosts"))
+        misterio_host_list = [
+            e for e in os.listdir(os.path.join(home, "hosts")) if e != "misterio.toml"
+        ]
     else:
         misterio_host_list = misterio_host
-    print(f"MISTERIO HOME:{home} Host to be processed:{misterio_host_list}")
+    print(f"HOSTS:{misterio_host_list} MISTERIO HOME:{home}")
     if list_flag:
         for mhost in misterio_host_list:
             try:
@@ -141,17 +164,13 @@ def misterio_cmd(home, list_flag, misterio_host, single_role, docker_command):
         sys.exit(0)
     for mhost in misterio_host_list:
         docker_host = f"ssh://{mhost}"
-        # GG: Localhost does not require docker_host
-        if "localhost" not in mhost:
-            os.environ["DOCKER_HOST"] = docker_host
-            print(f"=== {docker_host} ===")
-        else:
-            #  In localhost mode trust context to work on
-            os.environ["DOCKER_HOST"]=""
-            print(f"=== localhost ===")
+        # GG: Localhost not accepted anymore: use misterio.toml instead
+        if "localhost" in mhost:
+            raise Exception("Use misterio.toml not localhost for special needs")
+        os.environ["DOCKER_HOST"] = docker_host
         hosts_path = os.path.join(home, "hosts", mhost)
+        load_misterio_config(os.path.join(home, "hosts", "misterio.toml"), mhost)
         for filename in os.listdir(hosts_path):
-            # print(filename)
             if filename.endswith(".env"):
                 if single_role is None:
                     process_role(
