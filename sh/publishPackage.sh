@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
-[ -f dist/misterio*.tar.gz  ] && rm -r dist
-python3 -m build
-python3 -m twine upload dist/*
-# Tag the new version baby
-# git tag 0.1.6-dev
-#git push --tags
-
+cargo package
+cargo publish
+# git tag 0.1.6
+# git push --tags

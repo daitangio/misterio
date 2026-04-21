@@ -1,0 +1,1 @@
+Rewrite the project in Rust, keeping it as simple as possible

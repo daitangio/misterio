@@ -1,171 +1,103 @@
-# What is Misterio?
-Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*.
-<img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Mysterio Marvel" >
-It is super-easy to use.
+# Misterio
 
-*Cool!* The new python version is easier to use and understand.
+Minimal multi-host `docker compose` orchestration, rewritten in Rust.
 
-Misterio is a python command you can use to "apply" a set of roles to a infinite numbers of hosts.
-Less then 200 lines of python code HELP INCLUDED (sorry Ansible :)
+The model stays the same:
 
-Misterio is able to manage a set of compose target as an one, applying status changes easily.
+- `roles/<role>/` contains a compose project
+- `hosts/<host>/<role>.env` enables that role on that host
+- `misterio` walks hosts and roles, sets `DOCKER_HOST`, copies the selected env file to `.env`, and runs `docker compose`
 
-## Simple usage example
-
-Suppose to have two hosts called alice and bob. You want to run elasticsearch on both of them, and one gitlab instance on bob.
-So you define:
+## Build
 
 ```sh
-misterio_project/              # Misterio home directory
+cargo build
+```
+
+The crate exposes four binaries:
+
+```sh
+cargo run --bin misterio -- --help
+cargo run --bin misterio-add -- --help
+cargo run --bin misterio-mv -- --help
+cargo run --bin misterio-rm -- --help
+```
+
+## Layout
+
+```text
+misterio_project/
 ├── hosts/
-|   | 
-|   ├── misterio.toml          # optional extended configuration (see below)
+│   ├── misterio.toml
 │   ├── alice/
-│   │   └── elasticsearch.env  # empty file 
+│   │   └── elasticsearch.env
 │   └── bob/
-│       └── gitlab.env         # empty file 
-|           elasticsearch.env  # empty file
-
-└── roles/
-|   ├── elasticsearch/
-|   │   └── docker-compose.yml
-|   └── gitlab/
-|       └── docker-compose.yml 
-|
-└── attic/    # This is a special folder used by support utilities: it is automatically created
+│       ├── elasticsearch.env
+│       └── gitlab.env
+├── roles/
+│   ├── elasticsearch/
+│   │   └── docker-compose.yml
+│   └── gitlab/
+│       └── docker-compose.yml
+└── attic/
 ```
 
-Then running something like
+## Usage
 
-    misterio --home ./misterio_project rebuild
-
-will build the service and run them.
-To see the log you can use
-
-    misterio --home ./misterio_project -- logs --tail 10
-
-For simple stats on a single host:
-
-    misterio -h xwing -- stats --no-stream
-
-You can further customize the roles, adding variable inside the elasticsearch.env file (like Elastic Search cluster details)
-
-## Why?
-
-1. The only dependency is a recent version of `docker` CE  (on target hosts) and `python` 3 (on misterio host). 
-2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon (1GB RAM), provided you have a little swap (tested)
-3. It is agent-less. It depends only on `docker daemon` on the target. Docker communication is done via ssh and can be further configured via the `.ssh/config` file (for instance to setup keys, tunneling, etc)
-4. Everything must be versioned to work: you cannot easily "forget" something on your local machine. It respect the Infrastructure as Code paradigm. 
-
-## Details on env file
-
-For every hostname, define a directory inside `hosts/`
-Put in it an `env` file based on this syntax:
-
-    <rolename>[@inst].env
-
-where `@inst` is OPTIONAL and can be used to have multiple instances of a role on the same machine. Misterio will configure them one by one (see below misterio-add)
-
-
-## The magic
-
-For every role on the target machine misterio will:
-1. for each role, copy the correct `env` file calling it .env
-2. pass the command you provide to `docker-compose`
-3. fail fast or loop
-
-The "@rebuild" pseudo-command will do a `down` + `build` and `up` in one step.
-The "@refresh" will also pull data.
-
-## Distributed
-
-Because misterio manage the DOCKER_HOST automatically, it is already distributed.
-
-## About extended configuration
-
-Working with orbstack I faced some troubles because of how orbstack configure the docker client.
-
-orbstack uses docker "context" which is a smart way to define a lot of access configurations in docker.
-The trouble is orbstack define a new default which do not play nice with my setup.
-
-Docker context are more flexible than hostname, but hostname are very easy to understand, and we want to try to be forward compatible.
-
-Parsing of extended configuration is available from version 1.6 onwards and it is totally optional. 
-You also require Python 3.11+
-
-
-## Python official version
-
-Look at https://pypi.org/project/misterio/ for the latest version
-
-## Python development version
-
-Install on your virtualenv with
+Rebuild everything:
 
 ```sh
-    python3 -m venv .venv
-    . .venv/bin/activate
-    pip install -e .
-    misterio --help
+misterio --home ./misterio_project @rebuild
 ```
 
-## Support commands
+Run a normal compose command on every discovered role:
 
-### misterio-add
-*misterio-add* add a role to a host, checking if it does not exists.
+```sh
+misterio --home ./misterio_project -- logs --tail 10
+```
 
-It leverage on COMPOSE_PROJECT_NAME variable to define different compose instances.
+Restrict to one host:
 
-### misterio-mv
-*misterio-mv* command can be used to migrate a stateless service from one host to another.
-It remove (compose down) the source service, move the env file and then reboot (up -d) the other one.
+```sh
+misterio --home ./misterio_project -h alice -- ps
+```
 
-### misterio-rm
-*misterio-rm* command delete a role from a host, ensuring it is destroied and no dandling instances are kept.
-Because env file are valuable (they can contain secrets and important configs) the command move them in a special "attic" directory, you can recover from.
+Restrict to one role:
 
-!! The support command are not required to run misterio. They are provided to leverage devops pipeline with a consistent way of manipulating misterio ecosystem.
+```sh
+misterio --home ./misterio_project -r elasticsearch ps
+```
 
-### About special localhost hostname
-Localhost hostname support was dropped in favor of misterio.toml extended configuration.
+Create env files for new roles:
 
+```sh
+misterio-add --home ./misterio_project bob pgvector@1 pgvector@2
+```
 
+Move a role between hosts:
 
-## The Bonus: stacks
-Misterio is also a collection of ready-made docker-compose infrastructure you can jump into.
-For instance, jenkins-with-docker show you how to get a dockerized-jenkins with:
+```sh
+misterio-mv --home ./misterio_project gitlab alice bob
+```
 
-- self running git server
-- access to docker daemon to self-build stuff using docker plugin
+Remove a role and archive its env file:
 
+```sh
+misterio-rm --home ./misterio_project bob gitlab
+```
 
-## Tips
+## Host configuration
 
-You can use the pseudo command --list to get the list of all the roles, and the --single-role option to restrict only to a role.
+`hosts/misterio.toml` is optional. To keep the Rust rewrite simple, the parser only reads the subset Misterio actually uses today:
 
-Under docker for Windows, add
-COMPOSE_CONVERT_WINDOWS_PATHS=1
-to your env path if you plan to bind stuff like
-> /var/run/docker.sock:/var/run/docker.sock
+```toml
+[alice.docker]
+context = "orbstack"
+host = "ssh://alice"
+```
 
-This will enable your roles to run on Windows and on Linux dameons seamlessly.
-See https://stackoverflow.com/a/52866439/75540 for more details
+## Notes
 
-
-## The Hype
-1. You can add git submodules below `roles/` to link recipes (your personal "ansible galaxy" is... docker hub!)
-2. No complex stuff to learn: it is just DOCKER!
-
-# Podman
-
-Podman is not tested, and it could require a modification to the way the DOCKER_HOST variable is addressed too. anyway, if you are able to create a pull request with a --podman option, I will be happy to merge it.
-
-
-
-# Other alternative
-https://github.com/piku/piku is an heroku-like alternative, based on python and not requiring docker.
-
-# Legacy
-The old misterio bash version can be found under [./old_sh_version](./old_sh_version) folder: it is a 4 years old version, which can still be used if want to further reduce depencencies on misterio controlling host.
-
-
+- The Rust version keeps the original alias commands: `@rebuild` and `@upgrade`.
+- `misterio-add` still creates the default `MISTERIO_*` variables.
+- `localhost` is still rejected in favor of `misterio.toml`.

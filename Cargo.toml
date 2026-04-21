@@ -1,0 +1,27 @@
+[package]
+name = "misterio"
+version = "0.1.6"
+edition = "2021"
+description = "Minimal docker compose orchestration CLI"
+license = "MIT"
+repository = "https://github.com/daitangio/misterio"
+
+[lib]
+name = "misterio"
+path = "src/lib.rs"
+
+[[bin]]
+name = "misterio"
+path = "src/bin/misterio.rs"
+
+[[bin]]
+name = "misterio-add"
+path = "src/bin/misterio-add.rs"
+
+[[bin]]
+name = "misterio-mv"
+path = "src/bin/misterio-mv.rs"
+
+[[bin]]
+name = "misterio-rm"
+path = "src/bin/misterio-rm.rs"
