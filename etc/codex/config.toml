@@ -1,0 +1,14 @@
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
+[plugins."github@openai-curated"]
+enabled = true
+
+[projects."/workspaces/misterio"]
+trust_level = "trusted"
+
+[features]
+memories = true
+
+[memories]
+use_memories = true
+generate_memories = true
