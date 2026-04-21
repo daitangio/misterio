@@ -1,10 +1,8 @@
-Follow instruction at https://packaging.python.org/en/latest/tutorials/packaging-projects/
-
-The magic is done with
+Build and verify the Go binaries before tagging a release:
 
 ```sh
-pip install build
-python3 -m build twine
-python3 -m twine upload dist/*
+gofmt -w ./cmd ./internal
+go test ./...
+go build ./...
 git tag 0.1.6-dev # Tag the new version baby
 ```

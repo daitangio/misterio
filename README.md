@@ -3,10 +3,10 @@ Docker-compose based Ansible/SaltStack/NameYour *minimalistic alternative*.
 <img align="right"   src="https://gioorgi.com/wp-content/uploads/2020/07/misterio-300x170.png" alt="Mysterio Marvel" >
 It is super-easy to use.
 
-*Cool!* The new python version is easier to use and understand.
+*Cool!* The Go version is easier to distribute and maintain.
 
-Misterio is a python command you can use to "apply" a set of roles to a infinite numbers of hosts.
-Less then 200 lines of python code HELP INCLUDED (sorry Ansible :)
+Misterio is a Go command you can use to "apply" a set of roles to an infinite number of hosts.
+The codebase stays intentionally small and explicit, with separate binaries for the main workflow and utility commands.
 
 Misterio is able to manage a set of compose target as an one, applying status changes easily.
 
@@ -37,7 +37,7 @@ misterio_project/              # Misterio home directory
 
 Then running something like
 
-    misterio --home ./misterio_project rebuild
+    misterio --home ./misterio_project @rebuild
 
 will build the service and run them.
 To see the log you can use
@@ -52,7 +52,7 @@ You can further customize the roles, adding variable inside the elasticsearch.en
 
 ## Why?
 
-1. The only dependency is a recent version of `docker` CE  (on target hosts) and `python` 3 (on misterio host). 
+1. The only dependency is a recent version of `docker` CE on target hosts and the `misterio` binary on the controlling host.
 2. It does not rely on docker swarm or on K8s. It can run even on ultra-small nano containers on Amazon (1GB RAM), provided you have a little swap (tested)
 3. It is agent-less. It depends only on `docker daemon` on the target. Docker communication is done via ssh and can be further configured via the `.ssh/config` file (for instance to setup keys, tunneling, etc)
 4. Everything must be versioned to work: you cannot easily "forget" something on your local machine. It respect the Infrastructure as Code paradigm. 
@@ -75,7 +75,7 @@ For every role on the target machine misterio will:
 3. fail fast or loop
 
 The "@rebuild" pseudo-command will do a `down` + `build` and `up` in one step.
-The "@refresh" will also pull data.
+The "@upgrade" pseudo-command will pull updated images and then rebuild the stack.
 
 ## Distributed
 
@@ -90,23 +90,19 @@ The trouble is orbstack define a new default which do not play nice with my setu
 
 Docker context are more flexible than hostname, but hostname are very easy to understand, and we want to try to be forward compatible.
 
-Parsing of extended configuration is available from version 1.6 onwards and it is totally optional. 
-You also require Python 3.11+
+Parsing of extended configuration is available from version 1.6 onwards and it is totally optional.
 
+## Build from source
 
-## Python official version
-
-Look at https://pypi.org/project/misterio/ for the latest version
-
-## Python development version
-
-Install on your virtualenv with
+Build the Go binaries locally with
 
 ```sh
-    python3 -m venv .venv
-    . .venv/bin/activate
-    pip install -e .
-    misterio --help
+    go build -o ./bin/misterio ./cmd/misterio
+    go build -o ./bin/misterio-add ./cmd/misterio-add
+    go build -o ./bin/misterio-mv ./cmd/misterio-mv
+    go build -o ./bin/misterio-rm ./cmd/misterio-rm
+    go test ./...
+    ./bin/misterio --help
 ```
 
 ## Support commands
@@ -163,9 +159,7 @@ Podman is not tested, and it could require a modification to the way the DOCKER_
 
 
 # Other alternative
-https://github.com/piku/piku is an heroku-like alternative, based on python and not requiring docker.
+https://github.com/piku/piku is a Heroku-like alternative that also targets simple deployments without Kubernetes.
 
 # Legacy
 The old misterio bash version can be found under [./old_sh_version](./old_sh_version) folder: it is a 4 years old version, which can still be used if want to further reduce depencencies on misterio controlling host.
-
-
