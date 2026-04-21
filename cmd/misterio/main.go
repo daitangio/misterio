@@ -1,9 +1,9 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/daitangio/misterio/internal/misterio"
 )
@@ -14,6 +14,40 @@ type options struct {
 	listOnly   bool
 	singleRole string
 	command    []string
+}
+
+type stringSliceFlag struct {
+	values []string
+}
+
+func (s *stringSliceFlag) String() string {
+	return fmt.Sprint(s.values)
+}
+
+func (s *stringSliceFlag) Set(value string) error {
+	s.values = append(s.values, value)
+	return nil
+}
+
+type boolSetter struct {
+	target *bool
+	value  bool
+}
+
+func (b boolSetter) String() string {
+	if b.target == nil {
+		return "false"
+	}
+	return fmt.Sprintf("%t", *b.target)
+}
+
+func (b boolSetter) Set(string) error {
+	*b.target = b.value
+	return nil
+}
+
+func (b boolSetter) IsBoolFlag() bool {
+	return true
 }
 
 func main() {
@@ -50,52 +84,42 @@ func parseArgs(args []string) (options, error) {
 		singleRole: os.Getenv("MISTERIO_SINGLE_ROLE"),
 	}
 
-	for i := 0; i < len(args); i++ {
-		arg := args[i]
-		switch {
-		case arg == "--":
-			opts.command = append(opts.command, args[i+1:]...)
-			return opts, nil
-		case arg == "--help":
-			printUsage(os.Stdout)
-			os.Exit(0)
-		case arg == "--version":
-			fmt.Println(misterio.Version)
-			os.Exit(0)
-		case arg == "--list":
-			opts.listOnly = true
-		case arg == "--no-list":
-			opts.listOnly = false
-		case arg == "--home":
-			i++
-			if i >= len(args) {
-				return options{}, fmt.Errorf("missing value for --home")
-			}
-			opts.home = args[i]
-		case strings.HasPrefix(arg, "--home="):
-			opts.home = strings.TrimPrefix(arg, "--home=")
-		case arg == "--misterio-host" || arg == "-h":
-			i++
-			if i >= len(args) {
-				return options{}, fmt.Errorf("missing value for %s", arg)
-			}
-			opts.hosts = append(opts.hosts, args[i])
-		case strings.HasPrefix(arg, "--misterio-host="):
-			opts.hosts = append(opts.hosts, strings.TrimPrefix(arg, "--misterio-host="))
-		case arg == "--single-role" || arg == "-r":
-			i++
-			if i >= len(args) {
-				return options{}, fmt.Errorf("missing value for %s", arg)
-			}
-			opts.singleRole = args[i]
-		case strings.HasPrefix(arg, "--single-role="):
-			opts.singleRole = strings.TrimPrefix(arg, "--single-role=")
-		default:
-			opts.command = append(opts.command, args[i:]...)
-			return opts, nil
-		}
+	fs := flag.NewFlagSet("misterio", flag.ContinueOnError)
+	fs.SetOutput(os.Stderr)
+	fs.Usage = func() {
+		printUsage(os.Stderr)
 	}
 
+	var hosts stringSliceFlag
+	var showHelp bool
+	var showVersion bool
+
+	fs.StringVar(&opts.home, "home", opts.home, "")
+	fs.Var(&hosts, "h", "")
+	fs.Var(&hosts, "misterio-host", "")
+	fs.StringVar(&opts.singleRole, "r", opts.singleRole, "")
+	fs.StringVar(&opts.singleRole, "single-role", opts.singleRole, "")
+	fs.BoolVar(&opts.listOnly, "list", false, "")
+	fs.Var(boolSetter{target: &opts.listOnly, value: false}, "no-list", "")
+	fs.BoolVar(&showHelp, "help", false, "")
+	fs.BoolVar(&showVersion, "version", false, "")
+
+	if err := fs.Parse(args); err != nil {
+		return options{}, err
+	}
+
+	if showHelp {
+		printUsage(os.Stdout)
+		os.Exit(0)
+	}
+
+	if showVersion {
+		fmt.Println(misterio.Version)
+		os.Exit(0)
+	}
+
+	opts.hosts = hosts.values
+	opts.command = fs.Args()
 	return opts, nil
 }
 
