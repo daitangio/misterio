@@ -29,6 +29,31 @@ misterio-mv = "misterio.misterio_util:misterio_mv"
 misterio-rm = "misterio.misterio_util:misterio_rm"
 misterio-add = "misterio.misterio_util:misterio_add"
 
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-cov>=5.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+    "--cov=misterio",
+    "--cov-report=term-missing",
+    "--cov-fail-under=85",
+]
+
+[tool.coverage.run]
+source = ["src/misterio"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+]
+
 [build-system]
 # Flit Core is a lightweight tool designed to simplify the process of packaging and distributing Python projects
 # following PEP 517

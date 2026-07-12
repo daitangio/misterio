@@ -22,3 +22,15 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py')
+    - name: Install test dependencies
+      run: |
+        pip install -e ".[test]"
+    - name: Run tests with pytest
+      run: |
+        python -m pytest --tb=short --cov-report=xml
+    # - name: Upload coverage to Codecov
+    #   if: matrix.python-version == '3.13'
+    #   uses: codecov/codecov-action@v4
+    #   with:
+    #     files: ./coverage.xml
+    #     fail_ci_if_error: false
