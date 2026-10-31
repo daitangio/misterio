@@ -2,6 +2,19 @@ import os, sys, shutil, subprocess, tomllib
 import click
 
 
+def get_version():
+    """Read version from pyproject.toml."""
+    pyproject_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "..", "pyproject.toml"
+    )
+    try:
+        with open(pyproject_path, "rb") as f:
+            config = tomllib.load(f)
+            return config["project"]["version"]
+    except (FileNotFoundError, KeyError, tomllib.TomlDecodeError):
+        return "0.0.0-dev"
+
+
 def process_role(home, env_full_path, docker_command):
     """Manage also alias"""
     # print(docker_command)
@@ -103,7 +116,7 @@ def load_misterio_config(config_file_name, host_target):
     default=None,
     help="Process just one role",
 )
-@click.version_option(version="0.1.7-dev")
+@click.version_option(version=get_version())
 @click.argument("docker_command", nargs=-1, type=str)
 def misterio(home, list_flag, misterio_host, single_role, docker_command):
     """M I S T E R I O

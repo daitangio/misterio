@@ -2,13 +2,13 @@
 # https://packaging.python.org/en/latest/tutorials/packaging-projects/
 [project]
 name = "misterio"
-version = "0.1.7-dev"
+version = "0.1.7a1"
 description = "misterio CLI"
 authors = [
   { name="Giovanni Giorgi", email="jj@gioorgi.com" },
 ]
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "click>=8.2.1",
 ]
@@ -37,6 +37,9 @@ test = [
 publish_misterio=[
     "build==1.6.1",
     "twine==7.0.0",
+]
+ai_support = [
+    "mistral-vibe>=3.0.4",
 ]
 
 
