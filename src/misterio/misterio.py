@@ -103,7 +103,7 @@ def load_misterio_config(config_file_name, host_target):
     default=None,
     help="Process just one role",
 )
-@click.version_option(version="0.1.6")
+@click.version_option(version="0.1.7-dev")
 @click.argument("docker_command", nargs=-1, type=str)
 def misterio(home, list_flag, misterio_host, single_role, docker_command):
     """M I S T E R I O

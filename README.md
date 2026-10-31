@@ -21,13 +21,13 @@ So you define:
 ```sh
 misterio_project/              # Misterio home directory
 ├── hosts/
-|   | 
-|   ├── misterio.toml          # optional extended configuration (see below)
+|   ├── misterio.toml          # optional extended configuration Need version >=0.1.6 (see below)
 │   ├── alice/
-│   │   └── elasticsearch.env  # empty file 
+│   │   └── elasticsearch.env  # Elastic instance on alice (possibly empty file)
 │   └── bob/
-│       └── gitlab.env         # empty file 
-|           elasticsearch.env  # empty file
+│       └── gitlab@fool.env    # Config for gitlab instance named fool
+|           gitlab@brave.env   # Config for gitlab instance named brave
+|           elasticsearch.env  # Elastic instance on bob
 
 └── roles/
 |   ├── elasticsearch/
@@ -40,16 +40,22 @@ misterio_project/              # Misterio home directory
 
 Then running something like
 
-    misterio --home ./misterio_project rebuild
+```sh
+misterio --home ./misterio_project rebuild
+```
 
 will build the services and run them.
 To see the logs you can use
 
+```sh
     misterio --home ./misterio_project -- logs --tail 10
+```
 
 For simple stats on a single host:
 
+```sh
     misterio -h xwing -- stats --no-stream
+```
 
 You can further customize the roles, adding variables inside the elasticsearch.env file (like Elastic Search cluster details)
 
