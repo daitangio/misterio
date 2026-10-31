@@ -1,4 +1,4 @@
-# 0.1.6-dev
+# 0.1.6
 
 + added ability to manage contexts
 + polished logging  
