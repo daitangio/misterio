@@ -1,6 +1,10 @@
 # 0.1.7-dev
 
+Code review with vibe+GG Review:
 
++ Fix DOCKER_CONTEXT does not remain set
++ Added typing and special exceptions
++ No validation of docker_command: now if you issue misterio with an empty command an error is signaled.
 
 # 0.1.6
 

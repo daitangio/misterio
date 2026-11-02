@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 [ -f dist/misterio*.tar.gz  ] && rm -r dist
+python -m pytest tests/ -v --tb=short || exit 1
 python3 -m build
 python3 -m twine upload dist/*
 # Tag the new version baby

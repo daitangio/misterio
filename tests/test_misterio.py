@@ -8,12 +8,73 @@ import pytest
 from click.testing import CliRunner
 
 from misterio.misterio import (
+    MisterioConfigError,
+    MisterioError,
+    MisterioValidationError,
     load_misterio_config,
     misterio,
     misterio_cmd,
     process_role,
     verify_misterio_home,
 )
+
+
+# ---------------------------------------------------------------------------
+# Custom exception tests (H3)
+# ---------------------------------------------------------------------------
+
+
+class TestCustomExceptions:
+    """Tests for custom exception hierarchy (H3)."""
+
+    def test_misterio_error_is_base_exception(self):
+        """MisterioError should be a subclass of Exception."""
+        assert issubclass(MisterioError, Exception)
+
+    def test_misterio_config_error_is_subclass(self):
+        """MisterioConfigError should be a subclass of MisterioError."""
+        assert issubclass(MisterioConfigError, MisterioError)
+
+    def test_misterio_validation_error_is_subclass(self):
+        """MisterioValidationError should be a subclass of MisterioError."""
+        assert issubclass(MisterioValidationError, MisterioError)
+
+
+
+    def test_misterio_config_error_can_be_raised_with_message(self):
+        """MisterioConfigError should accept a message."""
+        error = MisterioConfigError("Test config error")
+        assert str(error) == "Test config error"
+
+    def test_unknown_alias_raises_misterio_alias_error(self):
+        """H3: Unknown alias should raise MisterioError, not generic Exception."""
+        with pytest.raises(MisterioError, match="Unknown alias"):
+            process_role("/fake/home", "/fake/host/env.env", ["@unknown"])
+
+    def test_missing_directories_raises_misterio_validation_error(self, tmp_path):
+        """H3: Missing directories should raise MisterioValidationError."""
+        with pytest.raises(MisterioValidationError, match="validation errors"):
+            verify_misterio_home(str(tmp_path))
+
+    def test_localhost_raises_misterio_config_error(self, misterio_home):
+        """H3: Localhost should raise MisterioConfigError, not generic Exception."""
+        with pytest.raises(MisterioConfigError, match="Use misterio.toml"):
+            misterio_cmd(
+                home=str(misterio_home),
+                list_flag=False,
+                misterio_host=("localhost",),
+                single_role=None,
+                docker_command=("ps"),
+            )
+    def test_empty_command_do_not_work(self,misterio_home):
+        with pytest.raises(MisterioError, match="[?] Empty Command"):
+            misterio_cmd(
+                home=str(misterio_home),
+                list_flag=False,
+                misterio_host=("host_a",),
+                single_role="web",
+                docker_command=("",),
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -30,22 +91,22 @@ class TestVerifyMisterioHome:
 
     def test_missing_hosts(self, tmp_path):
         (tmp_path / "roles").mkdir()
-        with pytest.raises(Exception, match="validation errors"):
+        with pytest.raises(MisterioValidationError, match="validation errors"):
             verify_misterio_home(str(tmp_path))
 
     def test_missing_roles(self, tmp_path):
         (tmp_path / "hosts").mkdir()
-        with pytest.raises(Exception, match="validation errors"):
+        with pytest.raises(MisterioValidationError, match="validation errors"):
             verify_misterio_home(str(tmp_path))
 
     def test_both_missing(self, tmp_path):
-        with pytest.raises(Exception, match="validation errors"):
+        with pytest.raises(MisterioValidationError, match="validation errors"):
             verify_misterio_home(str(tmp_path))
 
     def test_hosts_is_file_not_dir(self, tmp_path):
         (tmp_path / "hosts").write_text("not a directory")
         (tmp_path / "roles").mkdir()
-        with pytest.raises(Exception, match="validation errors"):
+        with pytest.raises(MisterioValidationError, match="validation errors"):
             verify_misterio_home(str(tmp_path))
 
 
@@ -129,7 +190,7 @@ class TestProcessRole:
         )
 
     def test_unknown_alias_raises(self):
-        with pytest.raises(Exception, match="Unknown alias"):
+        with pytest.raises(MisterioError, match="Unknown alias"):
             process_role("/fake/home", "/fake/home/host/env.env", ["@unknown"])
         self.mock_llp.assert_not_called()
 
@@ -190,15 +251,6 @@ class TestMisterioCmd:
         call_args = self.mock_pr.call_args[0]
         assert call_args[1].endswith("web.env")
 
-    def test_localhost_rejected(self, misterio_home):
-        with pytest.raises(Exception, match="Use misterio.toml"):
-            misterio_cmd(
-                home=str(misterio_home),
-                list_flag=False,
-                misterio_host=("localhost",),
-                single_role=None,
-                docker_command=(),
-            )
 
     def test_auto_discovers_hosts_from_filesystem(self, misterio_home):
         """When misterio_host is an empty tuple, hosts are discovered from
@@ -208,7 +260,7 @@ class TestMisterioCmd:
             list_flag=False,
             misterio_host=(),  # empty → triggers auto-discovery
             single_role=None,
-            docker_command=(),
+            docker_command=("ps"),
         )
         # host_a has 2 roles, host_b has 1 role → 3 total process_role calls
         assert self.mock_pr.call_count == 3
@@ -219,7 +271,7 @@ class TestMisterioCmd:
             list_flag=False,
             misterio_host=("host_a",),
             single_role=None,
-            docker_command=(),
+            docker_command=("ps"),
         )
         expected_config_path = os.path.join(
             str(misterio_home), "hosts", "misterio.toml"
@@ -243,7 +295,6 @@ class TestMisterioCLI:
         assert result.exit_code == 0
         assert "M I S T E R I O" in result.output
 
-
     def test_list_with_valid_home(self, runner, misterio_home):
         result = runner.invoke(
             misterio, ["--home", str(misterio_home), "--list"]
@@ -251,3 +302,53 @@ class TestMisterioCLI:
         assert result.exit_code == 0
         # Should list roles for discovered hosts
         assert "web.env" in result.output or "Roles for" in result.output
+
+    def test_home_default_uses_runtime_pwd(self, runner, tmp_path, monkeypatch):
+        """C2: --home default should be evaluated at runtime, not import time."""
+        # Create a temporary directory with valid structure
+        (tmp_path / "roles").mkdir()
+        (tmp_path / "hosts").mkdir()
+
+        # Change to the temp directory
+        monkeypatch.chdir(tmp_path)
+
+        # Invoke misterio without --home, it should use current directory (tmp_path)
+        result = runner.invoke(misterio, ["--list"])
+        # The command should succeed with the runtime PWD
+        assert result.exit_code == 0
+        assert str(tmp_path) in result.output or "HOSTS:" in result.output
+
+    def test_localhost_exact_match_rejected(self, misterio_home):
+        """C4: localhost must be an exact match, not substring."""
+        # Test that exact "localhost" is rejected
+        with pytest.raises(MisterioConfigError, match="Use misterio.toml"):
+            misterio_cmd(
+                home=str(misterio_home),
+                list_flag=False,
+                misterio_host=("localhost",),
+                single_role=None,
+                docker_command=("ps"),
+            )
+
+    def test_localhost_substring_not_rejected(self, misterio_home, mock_process_role):
+        """C4: hostnames containing 'localhost' as substring should NOT be rejected."""
+        # Create a host directory with name containing "localhost"
+        hosts_dir = misterio_home / "hosts"
+        (hosts_dir / "mylocalhostserver").mkdir()
+        (hosts_dir / "mylocalhostserver" / "test.env").write_text("# test")
+        # Also need the role directory
+        (misterio_home / "roles" / "test").mkdir()
+
+        # This should NOT raise - only exact "localhost" is rejected
+        try:
+            misterio_cmd(
+                home=str(misterio_home),
+                list_flag=False,
+                misterio_host=("mylocalhostserver",),
+                single_role=None,
+                docker_command=("ps"),
+            )
+        except Exception as e:
+            # Should not raise the localhost exception
+            assert "Use misterio.toml" not in str(e)
+            raise
